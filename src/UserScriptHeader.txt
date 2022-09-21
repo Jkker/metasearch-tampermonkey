@@ -1,14 +1,14 @@
 ==UserScript==
 @name         Metasearch
-@namespace    https://github.com/Jkker/metasearch3
+@namespace    https://github.com/Jkker/metasearch-v3
 @version      1.0.0
 @description  Aggregated Searcher
 @author       Jkker
 @license      MIT
 {{match}}
-@icon         https://raw.githubusercontent.com/Jkker/metasearch3/master/src/public/favicon.ico
+@icon         https://raw.githubusercontent.com/Jkker/metasearch-v3/master/src/public/favicon.ico
 @grant        none
-@updateURL    https://raw.githubusercontent.com/Jkker/metasearch3/master/dist/auto-scroll.umd.cjs
-@downloadURL  https://raw.githubusercontent.com/Jkker/metasearch3/master/dist/auto-scroll.umd.cjs
-@supportURL   https://github.com/Jkker/metasearch3/issues
+@updateURL    https://raw.githubusercontent.com/Jkker/metasearch-v3/master/dist/auto-scroll.umd.cjs
+@downloadURL  https://raw.githubusercontent.com/Jkker/metasearch-v3/master/dist/auto-scroll.umd.cjs
+@supportURL   https://github.com/Jkker/metasearch-v3/issues
 ==/UserScript==
