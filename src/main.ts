@@ -36,7 +36,7 @@ root.id = "metasearch-root";
 let prevScrollPosition = window.pageYOffset;
 window.onscroll = function () {
   const currentScrollPos = window.pageYOffset;
-  root.style.bottom = prevScrollPosition > currentScrollPos ? "0" : "-40px";
+  root.style.bottom = prevScrollPosition > currentScrollPos ? "0" : "-48px";
   prevScrollPosition = currentScrollPos;
 };
 
