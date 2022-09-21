@@ -1,0 +1,105 @@
+#metasearch-root {
+  .icon-button {
+    all: unset;
+    box-sizing: border-box;
+    text-decoration: none;
+    & > svg {
+      width: 1em;
+      height: 1em;
+      color: currentColor;
+      fill: currentColor;
+      stroke: currentColor;
+    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: transparent;
+    border: 0;
+    outline: transparent;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    white-space: nowrap;
+    // States
+    -webkit-tap-highlight-color: transparent;
+    color: black;
+    flex: 1 0 auto;
+    @media screen and (prefers-color-scheme: dark) {
+      color: white;
+    }
+    &:hover {
+      filter: brightness(0.85);
+      @media screen and (prefers-color-scheme: dark) {
+        &.dark-invert {
+          filter: invert(1) hue-rotate(180deg) brightness(0.85);
+        }
+      }
+
+      background-color: rgba(0, 0, 0, 0.08);
+    }
+    &:active {
+      -webkit-tap-highlight-color: transparent;
+      filter: brightness(0.7);
+      @media screen and (prefers-color-scheme: dark) {
+        &.dark-invert {
+          filter: invert(1) hue-rotate(180deg) brightness(0.7);
+        }
+      }
+      background-color: rgba(0, 0, 0, 0.12);
+    }
+    // Mobile
+    @media screen and (max-width: 768px) {
+      & > span {
+        display: none;
+      }
+      padding: 0;
+    }
+    padding: 2px 6px;
+    min-width: 40px;
+    height: 100%;
+  }
+  box-sizing: border-box;
+  width: 100vw;
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  transition: all 0.1s ease-in-out;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  @media screen and (prefers-color-scheme: dark) {
+    background-color: rgba(0, 0, 0, 0.7);
+    .dark-invert {
+      filter: invert(1) hue-rotate(180deg);
+    }
+  }
+  z-index: 999999999;
+
+  #metasearch-close {
+    box-shadow: 0px 9px 9px rgb(0 0 0 / 17%);
+  }
+  #metasearch-link-container {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
+    overflow-x: auto;
+    width: 100%;
+    display: flex;
+    box-sizing: border-box;
+  }
+}
+
+body {
+  // &::after {
+  //   content: "";
+  //   height: 200vh;
+  //   width: 100vw;
+  //   background: linear-gradient(blue, red);
+  //   display: block;
+  // }
+  // margin: 0;
+  // padding: 0;
+  position: relative !important;
+}

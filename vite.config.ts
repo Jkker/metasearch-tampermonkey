@@ -1,0 +1,111 @@
+// vite.config.js
+import fs, { readFileSync } from "fs";
+import { resolve } from "path";
+import type { PluginOption, ResolvedConfig } from "vite";
+import { defineConfig } from "vite";
+import engines from "./src/config.js";
+
+function libInjectCss(): PluginOption {
+  const fileRegex = /\.(scss)$/;
+  const injectCode = (code: string) =>
+    `function styleInject(css,ref){if(ref===void 0){ref={}}var insertAt=ref.insertAt;if(!css||typeof document==="undefined"){return}var head=document.head||document.getElementsByTagName("head")[0];var style=document.createElement("style");style.type="text/css";if(insertAt==="top"){if(head.firstChild){head.insertBefore(style,head.firstChild)}else{head.appendChild(style)}}else{head.appendChild(style)}if(style.styleSheet){style.styleSheet.cssText=css}else{style.appendChild(document.createTextNode(css))}};styleInject(\`${code}\`)`;
+  const template = `console.warn("__INJECT__")`;
+
+  let viteConfig: ResolvedConfig;
+  const css: string[] = [];
+  return {
+    name: "lib-inject-css",
+
+    apply: "build",
+
+    configResolved(resolvedConfig: ResolvedConfig) {
+      viteConfig = resolvedConfig;
+    },
+
+    transform(code: string, id: string) {
+      if (fileRegex.test(id)) {
+        css.push(code);
+        return {
+          code: "",
+        };
+      }
+      if (
+        // @ts-ignore
+        id.includes(viteConfig.build.lib.entry)
+      ) {
+        return {
+          code: `${code}
+          ${template}`,
+        };
+      }
+      return null;
+    },
+
+    async writeBundle(_: any, bundle: any) {
+      for (const file of Object.entries(bundle)) {
+        const { root } = viteConfig;
+        const outDir: string = viteConfig.build.outDir || "dist";
+        const fileName: string = file[0];
+        const filePath: string = resolve(root, outDir, fileName);
+
+        try {
+          let data: string = fs.readFileSync(filePath, {
+            encoding: "utf8",
+          });
+
+          if (data.includes(template)) {
+            data = data.replace(template, injectCode(css.join("\n")));
+          }
+
+          fs.writeFileSync(filePath, data);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    },
+  };
+}
+
+const prependUserScriptHeader = () => ({
+  name: "prepend-user-script-header",
+  generateBundle(_, bundle) {
+    const cwd = process.cwd();
+    const match = engines
+      .map((engine) => {
+        const U = new URL(engine.url);
+        const base = U.hostname.split(".").slice(-2).join(".");
+
+        return `@match *://${base}${U.pathname}*\n@match *://*.${base}${U.pathname}*`;
+      })
+      .join("\n");
+
+    const UserScriptHeader = readFileSync(
+      resolve(cwd, "src/UserScriptHeader.txt"),
+      "utf8"
+    )
+      .trim()
+      .replace("{{match}}", match)
+      .split("\n")
+      .map((line) => "// " + line.trim())
+      .join("\n");
+
+    for (const chunk of Object.values(bundle) as any[]) {
+      if (chunk.code) {
+        chunk.code = `${UserScriptHeader}\n\n${chunk.code}`;
+      }
+    }
+  },
+});
+
+export default defineConfig({
+  plugins: [libInjectCss(), prependUserScriptHeader()],
+  build: {
+    lib: {
+      entry: resolve(__dirname, "src/main.ts"),
+      name: "metasearch",
+      fileName: "metasearch",
+      formats: ["iife"],
+    },
+    minify: false,
+  },
+});
