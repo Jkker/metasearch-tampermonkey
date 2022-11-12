@@ -5,7 +5,7 @@ export default [
     disabled: false,
     url: 'https://www.google.com/search?igu=1&pws=0&gl=us&gws_rd=cr&source=hp&newwindow=1&q=%s&oq=%s&safe=off',
     matchSite:
-      /^https?:\/\/www\.google(?:\.[A-z]{2,3}){1,2}\/[^?]+\?(?!tbm=)(?:&?q=|(?:[^#](?!&tbm=))+?&q=)(?:.(?!&tbm=))*$|(^https?:\/\/xn--flw351e\.ml\/search\?q=)/,
+      /^https?:\/\/www\.google(?:\.[A-z]{2,3}){1,2}\/[^?]+\?(?!tbm=)(?:&?q=|(?:[^#](?!&tbm=))+?&q=)(?:.(?!&tbm=))*$|(^https?:\/\/xn--flw351e\.ml\/search\?q=)/i,
     preload: false,
     embeddable: true,
     weight: 10,
@@ -19,14 +19,14 @@ export default [
     key: 'baidu',
     disabled: false,
     url: 'https://www.baidu.com/s?ie=utf-8&word=%s',
-    matchSite: /^https?:\/\/www\.baidu\.com\/(?:s|baidu)/,
+    matchSite: /^https?:\/\/www\.baidu\.com\/(?:s|baidu)/i,
     preload: false,
     embeddable: true,
     weight: 9,
     lightness: 0.5078431372549019,
     color: '#556dea',
     icon: '<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><g><path fill="none" d="M0 0h24v24H0z"></path><path fill-rule="nonzero" d="M5.927 12.497c2.063-.443 1.782-2.909 1.72-3.448-.101-.83-1.078-2.282-2.405-2.167-1.67.15-1.913 2.561-1.913 2.561-.226 1.115.54 3.497 2.598 3.054zm2.19 4.288c-.06.173-.195.616-.078 1.002.23.866.982.905.982.905h1.08v-2.64H8.944c-.52.154-.77.559-.827.733zm1.638-8.422c1.14 0 2.06-1.312 2.06-2.933 0-1.62-.92-2.93-2.06-2.93-1.137 0-2.06 1.31-2.06 2.93 0 1.621.923 2.933 2.06 2.933zm4.908.193c1.522.198 2.501-1.427 2.696-2.659.199-1.23-.784-2.658-1.862-2.904-1.08-.248-2.429 1.483-2.552 2.61-.147 1.38.197 2.758 1.718 2.953zm0 3.448c-1.865-2.905-4.513-1.723-5.4-.245-.881 1.477-2.256 2.41-2.451 2.658-.198.244-2.846 1.673-2.258 4.284.587 2.609 2.652 2.56 2.652 2.56s1.521.15 3.286-.246c1.766-.391 3.286.098 3.286.098s4.125 1.38 5.253-1.278c1.128-2.66-.637-4.038-.637-4.038s-2.356-1.823-3.732-3.793zm-6.008 7.75c-1.158-.231-1.619-1.021-1.677-1.156-.057-.137-.386-.772-.212-1.853.5-1.619 1.927-1.735 1.927-1.735h1.428v-1.755l1.215.02v6.479h-2.68zm4.59-.019c-1.196-.308-1.251-1.158-1.251-1.158v-3.412l1.251-.02v3.066c.077.328.483.387.483.387h1.271v-3.433h1.332v4.57h-3.086zm7.454-9.11c0-.59-.49-2.364-2.305-2.364-1.819 0-2.062 1.675-2.062 2.859 0 1.13.095 2.707 2.354 2.657 2.26-.05 2.013-2.56 2.013-3.152z"></path></g></svg>',
-    q: 'wd',
+    q: ['wd', 'word'],
   },
   {
     name: '知乎',
@@ -48,7 +48,7 @@ export default [
     preload: false,
     disabled: false,
     url: 'https://search.bilibili.com/all?keyword=%s',
-    matchSite: /^https?:\/\/search\.bilibili\.com\/all/,
+    matchSite: /^https?:\/\/search\.bilibili\.com\/all/i,
     q: 'keyword',
     embeddable: true,
     weight: 7,
@@ -94,7 +94,7 @@ export default [
     preload: false,
     disabled: false,
     url: 'https://www.youtube.com/results?search_query=%s',
-    matchSite: /^https?:\/\/www\.youtube\.com\/results/,
+    matchSite: /^https?:\/\/www\.youtube\.com\/results/i,
     q: 'search_query',
     embeddable: true,
     weight: 6,
@@ -109,7 +109,7 @@ export default [
     preload: false,
     disabled: false,
     url: 'https://github.com/search?q=%s',
-    matchSite: /^https?:\/\/github\.com\/search/,
+    matchSite: /^https?:\/\/github\.com\/search/i,
     embeddable: true,
     weight: 5,
     lightness: 0.09215686274509804,
@@ -122,7 +122,7 @@ export default [
     preload: false,
     disabled: false,
     url: 'https://twitter.com/search?q=%s',
-    matchSite: /^https?:\/\/twitter\.com\/search/,
+    matchSite: /^https?:\/\/twitter\.com\/search/i,
     embeddable: true,
     weight: 2,
     lightness: 0.5254901960784314,
@@ -135,7 +135,7 @@ export default [
     preload: false,
     disabled: false,
     url: 'https://www.wolframalpha.com/input?i=%s',
-    matchSite: /^https?:\/\/www\.wolframalpha\.com\/input/,
+    matchSite: /^https?:\/\/www\.wolframalpha\.com\/input/i,
     embeddable: true,
     weight: 4,
     lightness: 0.5254901960784314,
@@ -162,7 +162,15 @@ export default [
     preload: false,
     disabled: false,
     url: 'https://s.weibo.com/weibo?q=%s',
-    matchSite: /^https?:\/\/s\.weibo\.com\/weibo\//i,
+    matchSite: /^https?:\/\/(s|m)\.weibo\.c(om|n)\/(weibo|search)/i,
+    q: (url, query) => {
+      if (url.match(/^https?:\/\/s\.weibo\.com\/weibo/i)) {
+        return query.get('q');
+      }
+      return new URLSearchParams(
+        decodeURIComponent(query.get('containerid'))
+      ).get('q');
+    },
     embeddable: true,
     weight: 3.5,
     url_scheme: 'sinaweibo://searchall?q=%s',

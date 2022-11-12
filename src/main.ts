@@ -64,8 +64,12 @@ const matchSite = (url: string, searchParams: URLSearchParams) => {
     }
     // Is function
     else if (typeof e.matchSite === 'function') {
-      if (e.matchSite(url, searchParams)) {
-        return i;
+      try {
+        if (e.matchSite(url, searchParams)) {
+          return i;
+        }
+      } catch (e) {
+        console.error(e);
       }
     }
     // Is string
@@ -91,7 +95,11 @@ const getQuery = (
     if (match) return match[1];
   }
   if (typeof engine.q === 'function') {
-    return engine.q(url, searchParams);
+    try {
+      return engine.q(url, searchParams);
+    } catch (e) {
+      console.error(e);
+    }
   }
   if (Array.isArray(engine.q)) {
     for (let i = 0; i < engine.q.length; i++) {
@@ -107,9 +115,13 @@ const url = window.location.href;
 const engineIndex = matchSite(url, searchParams);
 
 if (engineIndex !== -1) {
-  console.log(`🚀 `, engines[engineIndex]);
+  console.log(
+    `🚀 Metasearch Loaded: `,
+    engines[engineIndex].name,
+    engines[engineIndex]
+  );
   const q = encodeURIComponent(
-    getQuery(engines[engineIndex], url, searchParams).trim()
+    getQuery(engines[engineIndex], url, searchParams)?.trim?.()
   );
 
   // SECTION: Render Logic
