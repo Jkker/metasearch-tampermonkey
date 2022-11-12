@@ -134,7 +134,7 @@ export default [
     key: 'wolfram',
     preload: false,
     disabled: false,
-    url: 'https://www.wolframalpha.com/input/?i=%s',
+    url: 'https://www.wolframalpha.com/input?i=%s',
     matchSite: /^https?:\/\/www\.wolframalpha\.com\/input/,
     embeddable: true,
     weight: 4,

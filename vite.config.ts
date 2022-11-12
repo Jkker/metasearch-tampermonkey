@@ -55,7 +55,7 @@ function libInjectCss(): PluginOption {
 
           if (data.includes(template)) {
             data = data.replace(template, injectCode(css.join("\n")));
-            
+
           }
 
           fs.writeFileSync(filePath, data);
@@ -72,23 +72,27 @@ const prependUserScriptHeader = () => ({
   generateBundle(_, bundle) {
     const cwd = process.cwd();
     const match = engines
+      .filter((e) => !e.disabled)
       .map((engine) => {
         const U = new URL(engine.url);
-        const base = U.hostname.split(".").slice(-2).join(".");
+        const domain = U.hostname.split('.').slice(-2).join('.');
 
-        return `@match *://${base}${U.pathname}*\n@match *://*.${base}${U.pathname}*`;
-      })
-      .join("\n");
+        return `@match        *://${domain}${U.pathname}*\n@match        *://*.${domain}${U.pathname}*`;
+      });
+
+    const deDup = (arr: string[]) => [...new Set(arr)];
+
+    const matchStr = deDup(match).join('\n');
 
     const UserScriptHeader = readFileSync(
-      resolve(cwd, "src/UserScriptHeader.txt"),
-      "utf8"
+      resolve(cwd, 'src/UserScriptHeader.txt'),
+      'utf8'
     )
       .trim()
-      .replace("{{match}}", match)
-      .split("\n")
-      .map((line) => "// " + line.trim())
-      .join("\n");
+      .replace('{{match}}', matchStr)
+      .split('\n')
+      .map((line) => '// ' + line.trim())
+      .join('\n');
 
     for (const chunk of Object.values(bundle) as any[]) {
       if (chunk.code) {

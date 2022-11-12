@@ -1,56 +1,48 @@
 // ==UserScript==
 // @name         Metasearch
 // @namespace    https://github.com/Jkker/metasearch-v3
-// @version      1.0.0
+// @version      1.1.0
 // @description  Aggregated Searcher
 // @author       Jkker
 // @license      MIT
-// @match *://google.com/search*
-// @match *://*.google.com/search*
-// @match *://baidu.com/s*
-// @match *://*.baidu.com/s*
-// @match *://zhihu.com/search*
-// @match *://*.zhihu.com/search*
-// @match *://bilibili.com/all*
-// @match *://*.bilibili.com/all*
-// @match *://duckduckgo.com/*
-// @match *://*.duckduckgo.com/*
-// @match *://google.com/search*
-// @match *://*.google.com/search*
-// @match *://youtube.com/results*
-// @match *://*.youtube.com/results*
-// @match *://github.com/search*
-// @match *://*.github.com/search*
-// @match *://twitter.com/search*
-// @match *://*.twitter.com/search*
-// @match *://wolframalpha.com/input/*
-// @match *://*.wolframalpha.com/input/*
-// @match *://toutiao.com/search*
-// @match *://*.toutiao.com/search*
-// @match *://weibo.com/weibo*
-// @match *://*.weibo.com/weibo*
-// @match *://google.com/search*
-// @match *://*.google.com/search*
-// @match *://bing.com/dict/search*
-// @match *://*.bing.com/dict/search*
-// @match *://youdao.com/result*
-// @match *://*.youdao.com/result*
-// @match *://amazon.com/s*
-// @match *://*.amazon.com/s*
-// @match *://ebay.com/sch/i.html*
-// @match *://*.ebay.com/sch/i.html*
-// @match *://jd.com/bases/m/searchKeyword.htm*
-// @match *://*.jd.com/bases/m/searchKeyword.htm*
-// @match *://taobao.com/search*
-// @match *://*.taobao.com/search*
-// @match *://mozilla.org/en-US/search*
-// @match *://*.mozilla.org/en-US/search*
-// @match *://sogou.com/weixin*
-// @match *://*.sogou.com/weixin*
-// @icon         https://raw.githubusercontent.com/Jkker/metasearch-v3/master/src/public/favicon.ico
+// @match        *://google.com/search*
+// @match        *://*.google.com/search*
+// @match        *://baidu.com/s*
+// @match        *://*.baidu.com/s*
+// @match        *://zhihu.com/search*
+// @match        *://*.zhihu.com/search*
+// @match        *://bilibili.com/all*
+// @match        *://*.bilibili.com/all*
+// @match        *://duckduckgo.com/*
+// @match        *://*.duckduckgo.com/*
+// @match        *://youtube.com/results*
+// @match        *://*.youtube.com/results*
+// @match        *://github.com/search*
+// @match        *://*.github.com/search*
+// @match        *://twitter.com/search*
+// @match        *://*.twitter.com/search*
+// @match        *://wolframalpha.com/input*
+// @match        *://*.wolframalpha.com/input*
+// @match        *://weibo.com/weibo*
+// @match        *://*.weibo.com/weibo*
+// @match        *://bing.com/dict/search*
+// @match        *://*.bing.com/dict/search*
+// @match        *://youdao.com/result*
+// @match        *://*.youdao.com/result*
+// @match        *://amazon.com/s*
+// @match        *://*.amazon.com/s*
+// @match        *://ebay.com/sch/i.html*
+// @match        *://*.ebay.com/sch/i.html*
+// @match        *://jd.com/bases/m/searchKeyword.htm*
+// @match        *://*.jd.com/bases/m/searchKeyword.htm*
+// @match        *://taobao.com/search*
+// @match        *://*.taobao.com/search*
+// @match        *://mozilla.org/en-US/search*
+// @match        *://*.mozilla.org/en-US/search*
+// @icon         https://raw.githubusercontent.com/Jkker/metasearch-v3/master/src/favicon.ico
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/Jkker/metasearch-v3/master/dist/auto-scroll.umd.cjs
-// @downloadURL  https://raw.githubusercontent.com/Jkker/metasearch-v3/master/dist/auto-scroll.umd.cjs
+// @updateURL    https://github.com/Jkker/metasearch-v3/blob/main/dist/metasearch.iife.js
+// @downloadURL  https://github.com/Jkker/metasearch-v3/blob/main/dist/metasearch.iife.js
 // @supportURL   https://github.com/Jkker/metasearch-v3/issues
 // ==/UserScript==
 
@@ -195,7 +187,7 @@
       key: "wolfram",
       preload: false,
       disabled: false,
-      url: "https://www.wolframalpha.com/input/?i=%s",
+      url: "https://www.wolframalpha.com/input?i=%s",
       matchSite: /^https?:\/\/www\.wolframalpha\.com\/input/,
       embeddable: true,
       weight: 4,
