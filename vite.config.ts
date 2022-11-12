@@ -55,6 +55,7 @@ function libInjectCss(): PluginOption {
 
           if (data.includes(template)) {
             data = data.replace(template, injectCode(css.join("\n")));
+            
           }
 
           fs.writeFileSync(filePath, data);
