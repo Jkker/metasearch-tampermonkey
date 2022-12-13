@@ -1,5 +1,5 @@
-import './styles.scss';
 import allEngines from './config.js';
+import './styles.scss';
 
 interface Engine {
   name: string;
@@ -29,15 +29,27 @@ const engines: Engine[] = allEngines
   .filter((e) => !e.disabled)
   .sort((a, b) => b.weight - a.weight);
 
-function Button({ icon, color, name, display, lightness, href }: any) {
-  const a = document.createElement('a');
+const hotkeys: {
+  [key: string]: number;
+} = engines.reduce((acc, engine, index) => {
+  const key = engine.key[0].toLowerCase();
+  acc[key] = acc[key] ? [...acc[key], index] : [index];
+  return acc;
+}, {});
 
-  if (color) a.style.color = color;
+function Button({ icon, color, name, display, lightness, href, index }: any) {
+  const a = document.createElement('a');
+  if (color) a.style.setProperty('--color', color);
   a.href = href;
 
   if (!display) {
     a.style.display = 'none';
   }
+  a.setAttribute('target', '_blank');
+  a.setAttribute('rel', 'noopener noreferrer');
+  a.setAttribute('title', name);
+  a.setAttribute('aria-label', name);
+  a.setAttribute('data-index', index + '');
   a.title = name;
   a.classList.add('icon-button');
   a.innerHTML = icon;
@@ -47,14 +59,12 @@ function Button({ icon, color, name, display, lightness, href }: any) {
   if (lightness < 0.5) {
     a.classList.add('dark-invert');
   }
-
   a.append(text);
-
   return a;
 }
 
 // SECTION: Search Logic
-const matchSite = (url: string, searchParams: URLSearchParams) => {
+const getCurrentEngineIndex = (url: string, searchParams: URLSearchParams) => {
   for (let i = engines.length - 1; i >= 0; i--) {
     const e = engines[i];
     if (e.matchSite instanceof RegExp) {
@@ -110,19 +120,14 @@ const getQuery = (
   return searchParams.get('q') || searchParams.get('query') || null;
 };
 
-const searchParams = new URLSearchParams(window.location.search);
 const url = window.location.href;
-const engineIndex = matchSite(url, searchParams);
+const params = new URLSearchParams(window.location.search);
+const currEngineIndex = getCurrentEngineIndex(url, params);
 
-if (engineIndex !== -1) {
-  console.log(
-    `🚀 Metasearch Loaded: `,
-    engines[engineIndex].name,
-    engines[engineIndex]
-  );
-  const q = encodeURIComponent(
-    getQuery(engines[engineIndex], url, searchParams)?.trim?.()
-  );
+if (currEngineIndex !== -1) {
+  const filtered = engines.filter((_, i) => i !== currEngineIndex);
+  const matchedEngine = engines[currEngineIndex];
+  const q = encodeURIComponent(getQuery(matchedEngine, url, params)?.trim?.());
 
   // SECTION: Render Logic
 
@@ -134,16 +139,27 @@ if (engineIndex !== -1) {
   root.id = 'metasearch-root';
 
   let prevScrollPosition = window.pageYOffset;
-  window.onscroll = function () {
-    const currentScrollPos = window.pageYOffset;
-    root.style.bottom = prevScrollPosition > currentScrollPos ? '0' : '-48px';
-    prevScrollPosition = currentScrollPos;
-  };
+  window.addEventListener(
+    'scroll',
+    () => {
+      const currentScrollPos = window.pageYOffset;
+      // Scrolling up
+      if (prevScrollPosition > currentScrollPos) {
+        root.style.bottom = '0';
+      } else {
+        // Scrolling down
+        root.style.bottom = '-48px';
+      }
+      prevScrollPosition = currentScrollPos;
+    },
+    true
+  );
 
   // Render Buttons
-  for (let i = 0; i < engines.length; i++) {
-    if (i === engineIndex) continue; // Skip current engine
-    const engine = engines[i];
+  const linkList = [];
+
+  for (let i = 0; i < filtered.length; i++) {
+    const engine = filtered[i];
     const button = Button({
       icon: engine.icon,
       color: engine.color,
@@ -151,7 +167,9 @@ if (engineIndex !== -1) {
       display: true,
       lightness: engine.lightness,
       href: engine.url.replaceAll('%s', q),
+      index: i,
     });
+    linkList.push(button);
     linkContainer.appendChild(button);
   }
 
@@ -165,9 +183,80 @@ if (engineIndex !== -1) {
   close.addEventListener('click', () => {
     root.style.bottom = '-40px';
   });
+
+  // Inject Styles Here
   console.warn('__INJECT__');
 
   root.appendChild(close);
-
   body.appendChild(root);
+
+  const getNextTabIndex = (currIndex = -1, key) => {
+    for (let i = currIndex + 1; i < filtered.length + currIndex; i++) {
+      const index = i % filtered.length;
+      if (filtered[index].key[0] === key.toLowerCase()) return index;
+    }
+    return currIndex;
+  };
+
+  const keydownListener = (e: KeyboardEvent) => {
+    if (e.key === 'Alt') {
+      root.style.bottom = '0';
+    }
+
+    const active = document.activeElement as HTMLElement;
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      if (root.contains(active)) {
+        // Blur root if active element is inside
+        e.preventDefault();
+        active.blur();
+        return;
+      }
+    }
+
+    // Alt + Letter
+    const key = e.key.toLowerCase();
+    const focusIndex = linkContainer.contains(active)
+      ? parseInt(active.getAttribute('data-index') || '-1', 10)
+      : -1;
+
+    if (e.altKey && hotkeys[key] !== undefined) {
+      e.preventDefault();
+      const next = getNextTabIndex(focusIndex, key);
+      linkList[next].focus();
+      return;
+    }
+
+    // Alt + Number
+    const num = parseInt(e.key, 10);
+    if (e.altKey && !isNaN(num) && num < filtered.length) {
+      e.preventDefault();
+      const index = num - 1;
+      linkList[index].focus();
+      return;
+    }
+
+    // Alt + [: Prev
+    if (e.altKey && e.key === '[') {
+      const prevIndex =
+        focusIndex - 1 < 0 ? filtered.length - 1 : focusIndex - 1;
+      linkList[prevIndex].focus();
+      return;
+    }
+    // Alt + ]: Next
+    if (e.altKey && e.key === ']') {
+      const nextIndex = (focusIndex + 1) % filtered.length;
+      linkList[nextIndex].focus();
+      return;
+    }
+  };
+  const keyUpListener = (e: KeyboardEvent) => {
+    const active = document.activeElement as HTMLElement;
+    if (e.key === 'Alt' && linkContainer.contains(active)) {
+      active.click();
+      active.blur();
+    }
+  };
+
+  document.addEventListener('keydown', keydownListener);
+  document.addEventListener('keyup', keyUpListener);
 }

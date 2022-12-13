@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Metasearch
-// @namespace    https://github.com/Jkker/metasearch-v3
-// @version      1.1.1
+// @namespace    https://github.com/Jkker/metasearch-tampermonkey
+// @version      1.2.0
 // @description  Aggregated Searcher
 // @author       Jkker
 // @license      MIT
@@ -39,17 +39,16 @@
 // @match        *://*.taobao.com/search*
 // @match        *://mozilla.org/en-US/search*
 // @match        *://*.mozilla.org/en-US/search*
-// @icon         https://raw.githubusercontent.com/Jkker/metasearch-v3/master/src/favicon.ico
+// @icon         https://raw.githubusercontent.com/Jkker/metasearch-tampermonkey/master/src/favicon.ico
 // @grant        none
-// @updateURL    https://github.com/Jkker/metasearch-v3/blob/main/dist/metasearch.iife.js
-// @downloadURL  https://github.com/Jkker/metasearch-v3/blob/main/dist/metasearch.iife.js
-// @supportURL   https://github.com/Jkker/metasearch-v3/issues
+// @updateURL    https://github.com/Jkker/metasearch-tampermonkey/blob/main/dist/metasearch.iife.js
+// @downloadURL  https://github.com/Jkker/metasearch-tampermonkey/blob/main/dist/metasearch.iife.js
+// @supportURL   https://github.com/Jkker/metasearch-tampermonkey/issues
 // ==/UserScript==
 
 (function() {
   var _a, _b;
   "use strict";
-  const styles = "";
   const allEngines = [
     {
       name: "Google",
@@ -365,15 +364,26 @@
       icon: '<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><g><path fill="none" d="M0 0h24v24H0z"></path><path d="M18.574 13.711a.91.91 0 0 0 .898-.898c0-.498-.399-.898-.898-.898s-.898.4-.898.898c0 .5.4.898.898.898zm-4.425 0a.91.91 0 0 0 .898-.898c0-.498-.4-.898-.898-.898-.5 0-.898.4-.898.898 0 .5.399.898.898.898zm6.567 5.04a.347.347 0 0 0-.172.37c0 .048 0 .097.025.147.098.417.294 1.081.294 1.106 0 .073.025.122.025.172a.22.22 0 0 1-.221.22c-.05 0-.074-.024-.123-.048l-1.449-.836a.799.799 0 0 0-.344-.098c-.073 0-.147 0-.196.024-.688.197-1.4.295-2.161.295-3.66 0-6.607-2.457-6.607-5.505 0-3.047 2.947-5.505 6.607-5.505 3.659 0 6.606 2.458 6.606 5.505 0 1.647-.884 3.146-2.284 4.154zM16.673 8.099a9.105 9.105 0 0 0-.28-.005c-4.174 0-7.606 2.86-7.606 6.505 0 .554.08 1.09.228 1.6h-.089a9.963 9.963 0 0 1-2.584-.368c-.074-.025-.148-.025-.222-.025a.832.832 0 0 0-.418.123l-1.748 1.005c-.05.025-.099.05-.148.05a.273.273 0 0 1-.27-.27c0-.074.024-.123.049-.197.024-.024.246-.834.369-1.324 0-.05.024-.123.024-.172a.556.556 0 0 0-.221-.442C2.058 13.376 1 11.586 1 9.598 1 5.945 4.57 3 8.95 3c3.765 0 6.93 2.169 7.723 5.098zm-5.154.418c.573 0 1.026-.477 1.026-1.026 0-.573-.453-1.026-1.026-1.026s-1.026.453-1.026 1.026.453 1.026 1.026 1.026zm-5.26 0c.573 0 1.027-.477 1.027-1.026 0-.573-.454-1.026-1.027-1.026-.572 0-1.026.453-1.026 1.026s.454 1.026 1.026 1.026z"></path></g></svg>'
     }
   ];
+  const styles = "";
   const engines = allEngines.filter((e) => !e.disabled).sort((a, b) => b.weight - a.weight);
-  function Button({ icon, color, name, display, lightness, href }) {
+  const hotkeys = engines.reduce((acc, engine, index) => {
+    const key = engine.key[0].toLowerCase();
+    acc[key] = acc[key] ? [...acc[key], index] : [index];
+    return acc;
+  }, {});
+  function Button({ icon, color, name, display, lightness, href, index }) {
     const a = document.createElement("a");
     if (color)
-      a.style.color = color;
+      a.style.setProperty("--color", color);
     a.href = href;
     if (!display) {
       a.style.display = "none";
     }
+    a.setAttribute("target", "_blank");
+    a.setAttribute("rel", "noopener noreferrer");
+    a.setAttribute("title", name);
+    a.setAttribute("aria-label", name);
+    a.setAttribute("data-index", index + "");
     a.title = name;
     a.classList.add("icon-button");
     a.innerHTML = icon;
@@ -385,7 +395,7 @@
     a.append(text);
     return a;
   }
-  const matchSite = (url2, searchParams2) => {
+  const getCurrentEngineIndex = (url2, searchParams) => {
     for (let i = engines.length - 1; i >= 0; i--) {
       const e = engines[i];
       if (e.matchSite instanceof RegExp) {
@@ -394,7 +404,7 @@
         }
       } else if (typeof e.matchSite === "function") {
         try {
-          if (e.matchSite(url2, searchParams2)) {
+          if (e.matchSite(url2, searchParams)) {
             return i;
           }
         } catch (e2) {
@@ -408,9 +418,9 @@
     }
     return -1;
   };
-  const getQuery = (engine, url2, searchParams2) => {
+  const getQuery = (engine, url2, searchParams) => {
     if (typeof engine.q === "string") {
-      return searchParams2.get(engine.q);
+      return searchParams.get(engine.q);
     }
     if (engine.q instanceof RegExp) {
       const match = engine.q.exec(window.location.href);
@@ -419,55 +429,59 @@
     }
     if (typeof engine.q === "function") {
       try {
-        return engine.q(url2, searchParams2);
+        return engine.q(url2, searchParams);
       } catch (e) {
         console.error(e);
       }
     }
     if (Array.isArray(engine.q)) {
       for (let i = 0; i < engine.q.length; i++) {
-        const q = searchParams2.get(engine.q[i]);
+        const q = searchParams.get(engine.q[i]);
         if (q)
           return q;
       }
     }
-    return searchParams2.get("q") || searchParams2.get("query") || null;
+    return searchParams.get("q") || searchParams.get("query") || null;
   };
-  const searchParams = new URLSearchParams(window.location.search);
   const url = window.location.href;
-  const engineIndex = matchSite(url, searchParams);
-  if (engineIndex !== -1) {
-    console.log(
-      `\u{1F680} Metasearch Loaded: `,
-      engines[engineIndex].name,
-      engines[engineIndex]
-    );
-    const q = encodeURIComponent(
-      (_b = (_a = getQuery(engines[engineIndex], url, searchParams)) == null ? void 0 : _a.trim) == null ? void 0 : _b.call(_a)
-    );
+  const params = new URLSearchParams(window.location.search);
+  const currEngineIndex = getCurrentEngineIndex(url, params);
+  if (currEngineIndex !== -1) {
+    const filtered = engines.filter((_, i) => i !== currEngineIndex);
+    const matchedEngine = engines[currEngineIndex];
+    const q = encodeURIComponent((_b = (_a = getQuery(matchedEngine, url, params)) == null ? void 0 : _a.trim) == null ? void 0 : _b.call(_a));
     const body = document.querySelector("body");
     const root = document.createElement("div");
     const linkContainer = document.createElement("div");
     linkContainer.id = "metasearch-link-container";
     root.id = "metasearch-root";
     let prevScrollPosition = window.pageYOffset;
-    window.onscroll = function() {
-      const currentScrollPos = window.pageYOffset;
-      root.style.bottom = prevScrollPosition > currentScrollPos ? "0" : "-48px";
-      prevScrollPosition = currentScrollPos;
-    };
-    for (let i = 0; i < engines.length; i++) {
-      if (i === engineIndex)
-        continue;
-      const engine = engines[i];
+    window.addEventListener(
+      "scroll",
+      () => {
+        const currentScrollPos = window.pageYOffset;
+        if (prevScrollPosition > currentScrollPos) {
+          root.style.bottom = "0";
+        } else {
+          root.style.bottom = "-48px";
+        }
+        prevScrollPosition = currentScrollPos;
+      },
+      true
+    );
+    const linkList = [];
+    for (let i = 0; i < filtered.length; i++) {
+      const engine = filtered[i];
       const button = Button({
         icon: engine.icon,
         color: engine.color,
         name: engine.name,
         display: true,
         lightness: engine.lightness,
-        href: engine.url.replaceAll("%s", q)
+        href: engine.url.replaceAll("%s", q),
+        index: i
       });
+      linkList.push(button);
       linkContainer.appendChild(button);
     }
     root.appendChild(linkContainer);
@@ -488,7 +502,8 @@
   transition: all 0.1s ease-in-out;
   height: 32px;
   background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
   z-index: 999999999;
   box-shadow: 0px 0px 9px rgba(0, 0, 0, 0.07);
   overflow-y: hidden;
@@ -497,6 +512,7 @@
   all: unset;
   box-sizing: border-box;
   text-decoration: none;
+  color: var(--color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -508,7 +524,6 @@
   transition: all 0.15s ease-in-out;
   white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
-  color: rgba(0, 0, 0, 0.8);
   flex: 1 0 auto;
   padding: 2px 5px;
   min-width: 32px;
@@ -527,11 +542,6 @@
     width: 24px;
   }
 }
-@media screen and (prefers-color-scheme: dark) {
-  #metasearch-root .icon-button {
-    color: white;
-  }
-}
 #metasearch-root .icon-button:hover {
   filter: brightness(0.85);
   background-color: rgba(0, 0, 0, 0.08);
@@ -548,6 +558,16 @@
 }
 @media screen and (prefers-color-scheme: dark) {
   #metasearch-root .icon-button:active.dark-invert {
+    filter: invert(1) hue-rotate(180deg) brightness(0.7);
+  }
+}
+#metasearch-root .icon-button:focus {
+  -webkit-tap-highlight-color: transparent;
+  color: white;
+  background-color: var(--color);
+}
+@media screen and (prefers-color-scheme: dark) {
+  #metasearch-root .icon-button:focus.dark-invert {
     filter: invert(1) hue-rotate(180deg) brightness(0.7);
   }
 }
@@ -594,5 +614,60 @@ body {
 }`);
     root.appendChild(close);
     body.appendChild(root);
+    const getNextTabIndex = (currIndex = -1, key) => {
+      for (let i = currIndex + 1; i < filtered.length + currIndex; i++) {
+        const index = i % filtered.length;
+        if (filtered[index].key[0] === key.toLowerCase())
+          return index;
+      }
+      return currIndex;
+    };
+    const keydownListener = (e) => {
+      if (e.key === "Alt") {
+        root.style.bottom = "0";
+      }
+      const active = document.activeElement;
+      if (e.key === "Escape" || e.key === "Esc") {
+        if (root.contains(active)) {
+          e.preventDefault();
+          active.blur();
+          return;
+        }
+      }
+      const key = e.key.toLowerCase();
+      const focusIndex = linkContainer.contains(active) ? parseInt(active.getAttribute("data-index") || "-1", 10) : -1;
+      if (e.altKey && hotkeys[key] !== void 0) {
+        e.preventDefault();
+        const next = getNextTabIndex(focusIndex, key);
+        linkList[next].focus();
+        return;
+      }
+      const num = parseInt(e.key, 10);
+      if (e.altKey && !isNaN(num) && num < filtered.length) {
+        e.preventDefault();
+        const index = num - 1;
+        linkList[index].focus();
+        return;
+      }
+      if (e.altKey && e.key === "[") {
+        const prevIndex = focusIndex - 1 < 0 ? filtered.length - 1 : focusIndex - 1;
+        linkList[prevIndex].focus();
+        return;
+      }
+      if (e.altKey && e.key === "]") {
+        const nextIndex = (focusIndex + 1) % filtered.length;
+        linkList[nextIndex].focus();
+        return;
+      }
+    };
+    const keyUpListener = (e) => {
+      const active = document.activeElement;
+      if (e.key === "Alt" && linkContainer.contains(active)) {
+        active.click();
+        active.blur();
+      }
+    };
+    document.addEventListener("keydown", keydownListener);
+    document.addEventListener("keyup", keyUpListener);
   }
 })();

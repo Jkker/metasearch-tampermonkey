@@ -3,6 +3,7 @@
     all: unset;
     box-sizing: border-box;
     text-decoration: none;
+    color: var(--color);
     & > svg {
       width: 20px;
       height: 20px;
@@ -24,13 +25,8 @@
     cursor: pointer;
     transition: all 0.15s ease-in-out;
     white-space: nowrap;
-    // States
     -webkit-tap-highlight-color: transparent;
-    color: rgba(0, 0, 0, 0.8);
     flex: 1 0 auto;
-    @media screen and (prefers-color-scheme: dark) {
-      color: white;
-    }
     &:hover {
       filter: brightness(0.85);
       @media screen and (prefers-color-scheme: dark) {
@@ -51,7 +47,16 @@
       }
       background-color: rgba(0, 0, 0, 0.12);
     }
-    // Mobile
+    &:focus {
+      -webkit-tap-highlight-color: transparent;
+      color: white;
+      @media screen and (prefers-color-scheme: dark) {
+        &.dark-invert {
+          filter: invert(1) hue-rotate(180deg) brightness(0.7);
+        }
+      }
+      background-color: var(--color);
+    }
     @media screen and (max-width: 768px) {
       & > span {
         display: none;
@@ -104,14 +109,5 @@
 }
 
 body {
-  // &::after {
-  //   content: "";
-  //   height: 200vh;
-  //   width: 100vw;
-  //   background: linear-gradient(blue, red);
-  //   display: block;
-  // }
-  // margin: 0;
-  // padding: 0;
   position: relative !important;
 }

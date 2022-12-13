@@ -1,9 +1,11 @@
 // vite.config.js
-import fs, { readFileSync } from "fs";
-import { resolve } from "path";
-import type { PluginOption, ResolvedConfig } from "vite";
-import { defineConfig } from "vite";
-import engines from "./src/config.js";
+import autoprefixer from 'autoprefixer';
+import fs from 'fs';
+import { resolve } from 'path';
+import postcss from 'postcss';
+import type { PluginOption, ResolvedConfig } from 'vite';
+import { defineConfig } from 'vite';
+import engines from './src/config.js';
 
 function libInjectCss(): PluginOption {
   const fileRegex = /\.(scss)$/;
@@ -14,9 +16,9 @@ function libInjectCss(): PluginOption {
   let viteConfig: ResolvedConfig;
   const css: string[] = [];
   return {
-    name: "lib-inject-css",
+    name: 'lib-inject-css',
 
-    apply: "build",
+    apply: 'build',
 
     configResolved(resolvedConfig: ResolvedConfig) {
       viteConfig = resolvedConfig;
@@ -26,7 +28,7 @@ function libInjectCss(): PluginOption {
       if (fileRegex.test(id)) {
         css.push(code);
         return {
-          code: "",
+          code: '',
         };
       }
       if (
@@ -44,21 +46,20 @@ function libInjectCss(): PluginOption {
     async writeBundle(_: any, bundle: any) {
       for (const file of Object.entries(bundle)) {
         const { root } = viteConfig;
-        const outDir: string = viteConfig.build.outDir || "dist";
+        const outDir: string = viteConfig.build.outDir || 'dist';
         const fileName: string = file[0];
         const filePath: string = resolve(root, outDir, fileName);
 
         try {
-          let data: string = fs.readFileSync(filePath, {
-            encoding: "utf8",
+          let data: string = await fs.promises.readFile(filePath, {
+            encoding: 'utf8',
           });
-
+          const result = await postcss([autoprefixer]).process(css);
           if (data.includes(template)) {
-            data = data.replace(template, injectCode(css.join("\n")));
-
+            data = data.replace(template, injectCode(result.css));
           }
 
-          fs.writeFileSync(filePath, data);
+          await fs.promises.writeFile(filePath, data);
         } catch (e) {
           console.error(e);
         }
@@ -68,7 +69,7 @@ function libInjectCss(): PluginOption {
 }
 
 const prependUserScriptHeader = () => ({
-  name: "prepend-user-script-header",
+  name: 'prepend-user-script-header',
   generateBundle(_, bundle) {
     const cwd = process.cwd();
     const match = engines
@@ -84,10 +85,8 @@ const prependUserScriptHeader = () => ({
 
     const matchStr = deDup(match).join('\n');
 
-    const UserScriptHeader = readFileSync(
-      resolve(cwd, 'src/UserScriptHeader.txt'),
-      'utf8'
-    )
+    const UserScriptHeader = fs
+      .readFileSync(resolve(cwd, 'src/UserScriptHeader.txt'), 'utf8')
       .trim()
       .replace('{{match}}', matchStr)
       .split('\n')
@@ -106,10 +105,10 @@ export default defineConfig({
   plugins: [libInjectCss(), prependUserScriptHeader()],
   build: {
     lib: {
-      entry: resolve(__dirname, "src/main.ts"),
-      name: "metasearch",
-      fileName: "metasearch",
-      formats: ["iife"],
+      entry: resolve(__dirname, 'src/main.ts'),
+      name: 'metasearch',
+      fileName: 'metasearch',
+      formats: ['iife'],
     },
     minify: false,
   },

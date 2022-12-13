@@ -1,14 +1,14 @@
 ==UserScript==
 @name         Metasearch
-@namespace    https://github.com/Jkker/metasearch-v3
-@version      1.1.1
+@namespace    https://github.com/Jkker/metasearch-tampermonkey
+@version      1.2.0
 @description  Aggregated Searcher
 @author       Jkker
 @license      MIT
 {{match}}
-@icon         https://raw.githubusercontent.com/Jkker/metasearch-v3/master/src/favicon.ico
+@icon         https://raw.githubusercontent.com/Jkker/metasearch-tampermonkey/master/src/favicon.ico
 @grant        none
-@updateURL    https://github.com/Jkker/metasearch-v3/blob/main/dist/metasearch.iife.js
-@downloadURL  https://github.com/Jkker/metasearch-v3/blob/main/dist/metasearch.iife.js
-@supportURL   https://github.com/Jkker/metasearch-v3/issues
+@updateURL    https://github.com/Jkker/metasearch-tampermonkey/blob/main/dist/metasearch.iife.js
+@downloadURL  https://github.com/Jkker/metasearch-tampermonkey/blob/main/dist/metasearch.iife.js
+@supportURL   https://github.com/Jkker/metasearch-tampermonkey/issues
 ==/UserScript==
