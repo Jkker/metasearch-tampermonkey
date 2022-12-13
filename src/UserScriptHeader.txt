@@ -1,7 +1,7 @@
 ==UserScript==
 @name         Metasearch
 @namespace    https://github.com/Jkker/metasearch-tampermonkey
-@version      1.2.0
+@version      1.2.4
 @description  Aggregated Searcher
 @author       Jkker
 @license      MIT

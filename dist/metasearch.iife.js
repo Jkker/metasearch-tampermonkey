@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Metasearch
 // @namespace    https://github.com/Jkker/metasearch-tampermonkey
-// @version      1.2.0
+// @version      1.2.4
 // @description  Aggregated Searcher
 // @author       Jkker
 // @license      MIT
@@ -47,7 +47,6 @@
 // ==/UserScript==
 
 (function() {
-  var _a, _b;
   "use strict";
   const allEngines = [
     {
@@ -126,12 +125,12 @@
       disabled: false,
       url: "https://www.google.com/search?q=%s+site%3Areddit.com",
       matchSite: (url2, query) => {
-        var _a2, _b2, _c;
-        return url2.includes("google.com") && ((_c = (_b2 = decodeURIComponent((_a2 = query.get("q")) != null ? _a2 : "")) == null ? void 0 : _b2.includes) == null ? void 0 : _c.call(_b2, "site:reddit.com"));
+        var _a, _b, _c;
+        return url2.includes("google.com") && ((_c = (_b = decodeURIComponent((_a = query.get("q")) != null ? _a : "")) == null ? void 0 : _b.includes) == null ? void 0 : _c.call(_b, "site:reddit.com"));
       },
       q: (url2, query) => {
-        var _a2, _b2, _c;
-        return (_c = (_b2 = decodeURIComponent((_a2 = query.get("q")) != null ? _a2 : "")).replace) == null ? void 0 : _c.call(_b2, "site:reddit.com", "");
+        var _a, _b, _c;
+        return (_c = (_b = decodeURIComponent((_a = query.get("q")) != null ? _a : "")).replace) == null ? void 0 : _c.call(_b, "site:reddit.com", "");
       },
       preload: false,
       embeddable: true,
@@ -236,12 +235,12 @@
       key: "quora",
       url: "https://www.google.com/search?q=%s+site%3Aquora.com",
       matchSite: (url2, query) => {
-        var _a2, _b2, _c;
-        return url2.includes("google.com") && ((_c = (_b2 = decodeURIComponent((_a2 = query.get("q")) != null ? _a2 : "")) == null ? void 0 : _b2.includes) == null ? void 0 : _c.call(_b2, "site:quora.com"));
+        var _a, _b, _c;
+        return url2.includes("google.com") && ((_c = (_b = decodeURIComponent((_a = query.get("q")) != null ? _a : "")) == null ? void 0 : _b.includes) == null ? void 0 : _c.call(_b, "site:quora.com"));
       },
       q: (url2, query) => {
-        var _a2, _b2, _c;
-        return (_c = (_b2 = decodeURIComponent((_a2 = query.get("q")) != null ? _a2 : "")).replace) == null ? void 0 : _c.call(_b2, "site:quora.com", "");
+        var _a, _b, _c;
+        return (_c = (_b = decodeURIComponent((_a = query.get("q")) != null ? _a : "")).replace) == null ? void 0 : _c.call(_b, "site:quora.com", "");
       },
       url_scheme: "",
       preload: false,
@@ -253,7 +252,7 @@
       icon: '<svg stroke="currentColor" fill="currentColor" stroke-width="0" role="img" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><title></title><path d="M12.738 18.701c-.831-1.635-1.805-3.287-3.708-3.287-.362 0-.727.061-1.059.209l-.646-1.289c.786-.678 2.058-1.214 3.693-1.214 2.544 0 3.851 1.229 4.888 2.792.613-1.335.904-3.14.904-5.375 0-5.582-1.744-8.447-5.822-8.447-4.018 0-5.757 2.865-5.757 8.447 0 5.553 1.739 8.389 5.757 8.389.64 0 1.22-.069 1.75-.225zm.996 1.947c-.881.237-1.817.366-2.743.366-5.352 0-10.59-4.269-10.59-10.478C.402 4.271 5.639 0 10.991 0c5.441 0 10.628 4.238 10.628 10.537 0 3.504-1.635 6.351-4.01 8.191.764 1.148 1.543 1.914 2.652 1.914 1.199 0 1.68-.915 1.77-1.649h1.557c.092.974-.402 5.007-4.766 5.007-2.652 0-4.047-1.528-5.096-3.328l.008-.024z"></path></svg>'
     },
     {
-      name: "Bing \u8BCD\u5178",
+      name: "\u5FC5\u5E94",
       key: "bingdict",
       url: "https://cn.bing.com/dict/search?q=%s",
       matchSite: "https://cn.bing.com/dict/search",
@@ -264,7 +263,7 @@
       url_scheme: "",
       lightness: 0.6,
       color: "#09ABA0",
-      icon: '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 192 192" stroke="currentColor" fill="currentColor" height="1em" width="1em"> <path fill="#02A99E" opacity="1" stroke="none" d="M125.938271,139.999985C125.938263,148.148605 125.938263,155.797226 125.938263,164.023041C98.843987,158.680450 72.166801,153.420120 45.270416,148.116562C45.270416,114.459473 45.270416,81.037483 45.270416,46.967846C62.228786,43.506916 79.376663,40.007309 97.039154,36.402676C97.039154,44.197578 97.039154,51.320023 97.039154,58.639111C103.398552,60.409878 109.443642,62.093124 115.979416,63.913002C115.979416,53.301517 115.979416,43.060650 115.979416,32.408718C119.249802,31.582613 122.226326,30.830734 125.938278,29.893085C125.938278,66.716309 125.938278,103.108154 125.938271,139.999985M105.556885,95.417641C98.872597,92.803558 92.188316,90.189476 85.170311,87.444878C85.292763,94.447502 88.210686,98.464058 95.248993,100.227272C88.292999,103.790497 82.593506,106.710068 76.366074,109.900085C78.324829,106.175674 80.642792,103.612091 80.932571,100.836739C81.552238,94.901794 81.284760,88.849625 81.002586,82.863297C80.936310,81.457268 79.673637,79.629036 78.427383,78.856766C75.826019,77.244774 72.868401,76.207695 69.365799,74.621307C69.365799,85.588722 69.771385,95.726028 69.216400,105.810471C68.873695,112.037827 70.771362,116.146141 76.053902,119.338562C78.356873,120.730324 79.861282,121.227829 82.227722,119.691635C87.390663,116.340034 92.520729,112.793396 98.083679,110.240456C104.462219,107.313217 107.190498,103.095993 105.556885,95.417641z" /> <path fill="#09ABA0" opacity="1" stroke="none" d="M134.234467,141.672394C134.232941,109.270256 134.232941,77.336044 134.232941,45.155708C138.008377,45.155708 141.253082,45.155708 144.758194,45.155708C144.758194,78.362305 144.758194,111.410103 144.758194,145.347412C141.243271,143.067505 136.426208,148.442032 134.234467,141.672394z" /></svg>'
+      icon: '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" viewBox="0 0 192 192" stroke="currentColor" fill="currentColor" height="1em" width="1em"> <path fill="currentColor" opacity="1" stroke="none" d="M125.938271,139.999985C125.938263,148.148605 125.938263,155.797226 125.938263,164.023041C98.843987,158.680450 72.166801,153.420120 45.270416,148.116562C45.270416,114.459473 45.270416,81.037483 45.270416,46.967846C62.228786,43.506916 79.376663,40.007309 97.039154,36.402676C97.039154,44.197578 97.039154,51.320023 97.039154,58.639111C103.398552,60.409878 109.443642,62.093124 115.979416,63.913002C115.979416,53.301517 115.979416,43.060650 115.979416,32.408718C119.249802,31.582613 122.226326,30.830734 125.938278,29.893085C125.938278,66.716309 125.938278,103.108154 125.938271,139.999985M105.556885,95.417641C98.872597,92.803558 92.188316,90.189476 85.170311,87.444878C85.292763,94.447502 88.210686,98.464058 95.248993,100.227272C88.292999,103.790497 82.593506,106.710068 76.366074,109.900085C78.324829,106.175674 80.642792,103.612091 80.932571,100.836739C81.552238,94.901794 81.284760,88.849625 81.002586,82.863297C80.936310,81.457268 79.673637,79.629036 78.427383,78.856766C75.826019,77.244774 72.868401,76.207695 69.365799,74.621307C69.365799,85.588722 69.771385,95.726028 69.216400,105.810471C68.873695,112.037827 70.771362,116.146141 76.053902,119.338562C78.356873,120.730324 79.861282,121.227829 82.227722,119.691635C87.390663,116.340034 92.520729,112.793396 98.083679,110.240456C104.462219,107.313217 107.190498,103.095993 105.556885,95.417641z" /> <path fill="currentColor" opacity="1" stroke="none" d="M134.234467,141.672394C134.232941,109.270256 134.232941,77.336044 134.232941,45.155708C138.008377,45.155708 141.253082,45.155708 144.758194,45.155708C144.758194,78.362305 144.758194,111.410103 144.758194,145.347412C141.243271,143.067505 136.426208,148.442032 134.234467,141.672394z" /></svg>'
     },
     {
       name: "\u6709\u9053",
@@ -441,7 +440,7 @@
           return q;
       }
     }
-    return searchParams.get("q") || searchParams.get("query") || null;
+    return searchParams.get("q") || searchParams.get("query") || void 0;
   };
   const url = window.location.href;
   const params = new URLSearchParams(window.location.search);
@@ -449,50 +448,52 @@
   if (currEngineIndex !== -1) {
     const filtered = engines.filter((_, i) => i !== currEngineIndex);
     const matchedEngine = engines[currEngineIndex];
-    const q = encodeURIComponent((_b = (_a = getQuery(matchedEngine, url, params)) == null ? void 0 : _a.trim) == null ? void 0 : _b.call(_a));
-    const body = document.querySelector("body");
-    const root = document.createElement("div");
-    const linkContainer = document.createElement("div");
-    linkContainer.id = "metasearch-link-container";
-    root.id = "metasearch-root";
-    let prevScrollPosition = window.pageYOffset;
-    window.addEventListener(
-      "scroll",
-      () => {
-        const currentScrollPos = window.pageYOffset;
-        if (prevScrollPosition > currentScrollPos) {
-          root.style.bottom = "0";
-        } else {
-          root.style.bottom = "-48px";
-        }
-        prevScrollPosition = currentScrollPos;
-      },
-      true
-    );
-    const linkList = [];
-    for (let i = 0; i < filtered.length; i++) {
-      const engine = filtered[i];
-      const button = Button({
-        icon: engine.icon,
-        color: engine.color,
-        name: engine.name,
-        display: true,
-        lightness: engine.lightness,
-        href: engine.url.replaceAll("%s", q),
-        index: i
+    let q = getQuery(matchedEngine, url, params);
+    if (q) {
+      q = encodeURIComponent(q.trim());
+      const body = document.querySelector("body");
+      const root = document.createElement("div");
+      const linkContainer = document.createElement("div");
+      linkContainer.id = "metasearch-link-container";
+      root.id = "metasearch-root";
+      let prevScrollPosition = window.pageYOffset;
+      window.addEventListener(
+        "scroll",
+        () => {
+          const currentScrollPos = window.pageYOffset;
+          if (prevScrollPosition > currentScrollPos) {
+            root.style.bottom = "0";
+          } else {
+            root.style.bottom = "-48px";
+          }
+          prevScrollPosition = currentScrollPos;
+        },
+        true
+      );
+      const linkList = [];
+      for (let i = 0; i < filtered.length; i++) {
+        const engine = filtered[i];
+        const button = Button({
+          icon: engine.icon,
+          color: engine.color,
+          name: engine.name,
+          display: true,
+          lightness: engine.lightness,
+          href: engine.url.replaceAll("%s", q),
+          index: i
+        });
+        linkList.push(button);
+        linkContainer.appendChild(button);
+      }
+      root.appendChild(linkContainer);
+      const close = document.createElement("button");
+      close.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-width="2" d="M3,3 L21,21 M3,21 L21,3"></path></svg>`;
+      close.classList.add("icon-button");
+      close.id = "metasearch-close";
+      close.addEventListener("click", () => {
+        root.style.bottom = "-40px";
       });
-      linkList.push(button);
-      linkContainer.appendChild(button);
-    }
-    root.appendChild(linkContainer);
-    const close = document.createElement("button");
-    close.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-width="2" d="M3,3 L21,21 M3,21 L21,3"></path></svg>`;
-    close.classList.add("icon-button");
-    close.id = "metasearch-close";
-    close.addEventListener("click", () => {
-      root.style.bottom = "-40px";
-    });
-    function styleInject(css,ref){if(ref===void 0){ref={}}var insertAt=ref.insertAt;if(!css||typeof document==="undefined"){return}var head=document.head||document.getElementsByTagName("head")[0];var style=document.createElement("style");style.type="text/css";if(insertAt==="top"){if(head.firstChild){head.insertBefore(style,head.firstChild)}else{head.appendChild(style)}}else{head.appendChild(style)}if(style.styleSheet){style.styleSheet.cssText=css}else{style.appendChild(document.createTextNode(css))}};styleInject(`#metasearch-root {
+      function styleInject(css,ref){if(ref===void 0){ref={}}var insertAt=ref.insertAt;if(!css||typeof document==="undefined"){return}var head=document.head||document.getElementsByTagName("head")[0];var style=document.createElement("style");style.type="text/css";if(insertAt==="top"){if(head.firstChild){head.insertBefore(style,head.firstChild)}else{head.appendChild(style)}}else{head.appendChild(style)}if(style.styleSheet){style.styleSheet.cssText=css}else{style.appendChild(document.createTextNode(css))}};styleInject(`#metasearch-root {
   box-sizing: border-box;
   width: 100vw;
   display: flex;
@@ -553,12 +554,13 @@
 }
 #metasearch-root .icon-button:active {
   -webkit-tap-highlight-color: transparent;
-  filter: brightness(0.7);
-  background-color: rgba(0, 0, 0, 0.12);
+  filter: brightness(0.9);
+  color: white;
+  background-color: var(--color);
 }
 @media screen and (prefers-color-scheme: dark) {
   #metasearch-root .icon-button:active.dark-invert {
-    filter: invert(1) hue-rotate(180deg) brightness(0.7);
+    filter: invert(1) hue-rotate(180deg) brightness(0.9);
   }
 }
 #metasearch-root .icon-button:focus {
@@ -612,62 +614,63 @@
 body {
   position: relative !important;
 }`);
-    root.appendChild(close);
-    body.appendChild(root);
-    const getNextTabIndex = (currIndex = -1, key) => {
-      for (let i = currIndex + 1; i < filtered.length + currIndex; i++) {
-        const index = i % filtered.length;
-        if (filtered[index].key[0] === key.toLowerCase())
-          return index;
-      }
-      return currIndex;
-    };
-    const keydownListener = (e) => {
-      if (e.key === "Alt") {
-        root.style.bottom = "0";
-      }
-      const active = document.activeElement;
-      if (e.key === "Escape" || e.key === "Esc") {
-        if (root.contains(active)) {
+      root.appendChild(close);
+      body.appendChild(root);
+      const getNextTabIndex = (currIndex = -1, key) => {
+        for (let i = currIndex + 1; i < filtered.length + currIndex; i++) {
+          const index = i % filtered.length;
+          if (filtered[index].key[0] === key.toLowerCase())
+            return index;
+        }
+        return currIndex;
+      };
+      const keydownListener = (e) => {
+        if (e.key === "Alt") {
+          root.style.bottom = "0";
+        }
+        const active = document.activeElement;
+        if (e.key === "Escape" || e.key === "Esc") {
+          if (root.contains(active)) {
+            e.preventDefault();
+            active.blur();
+            return;
+          }
+        }
+        const key = e.key.toLowerCase();
+        const focusIndex = linkContainer.contains(active) ? parseInt(active.getAttribute("data-index") || "-1", 10) : -1;
+        if (e.altKey && hotkeys[key] !== void 0) {
           e.preventDefault();
-          active.blur();
+          const next = getNextTabIndex(focusIndex, key);
+          linkList[next].focus();
           return;
         }
-      }
-      const key = e.key.toLowerCase();
-      const focusIndex = linkContainer.contains(active) ? parseInt(active.getAttribute("data-index") || "-1", 10) : -1;
-      if (e.altKey && hotkeys[key] !== void 0) {
-        e.preventDefault();
-        const next = getNextTabIndex(focusIndex, key);
-        linkList[next].focus();
-        return;
-      }
-      const num = parseInt(e.key, 10);
-      if (e.altKey && !isNaN(num) && num < filtered.length) {
-        e.preventDefault();
-        const index = num - 1;
-        linkList[index].focus();
-        return;
-      }
-      if (e.altKey && e.key === "[") {
-        const prevIndex = focusIndex - 1 < 0 ? filtered.length - 1 : focusIndex - 1;
-        linkList[prevIndex].focus();
-        return;
-      }
-      if (e.altKey && e.key === "]") {
-        const nextIndex = (focusIndex + 1) % filtered.length;
-        linkList[nextIndex].focus();
-        return;
-      }
-    };
-    const keyUpListener = (e) => {
-      const active = document.activeElement;
-      if (e.key === "Alt" && linkContainer.contains(active)) {
-        active.click();
-        active.blur();
-      }
-    };
-    document.addEventListener("keydown", keydownListener);
-    document.addEventListener("keyup", keyUpListener);
+        const num = parseInt(e.key, 10);
+        if (e.altKey && !isNaN(num) && num < filtered.length) {
+          e.preventDefault();
+          const index = num - 1;
+          linkList[index].focus();
+          return;
+        }
+        if (e.altKey && (e.key === "[" || e.key === "-")) {
+          const prevIndex = focusIndex - 1 < 0 ? filtered.length - 1 : focusIndex - 1;
+          linkList[prevIndex].focus();
+          return;
+        }
+        if (e.altKey && (e.key === "]" || e.key === "=")) {
+          const nextIndex = (focusIndex + 1) % filtered.length;
+          linkList[nextIndex].focus();
+          return;
+        }
+      };
+      const keyUpListener = (e) => {
+        const active = document.activeElement;
+        if (e.key === "Alt" && linkContainer.contains(active)) {
+          active.click();
+          active.blur();
+        }
+      };
+      document.addEventListener("keydown", keydownListener);
+      document.addEventListener("keyup", keyUpListener);
+    }
   }
 })();

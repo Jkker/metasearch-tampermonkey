@@ -117,7 +117,7 @@ const getQuery = (
       if (q) return q;
     }
   }
-  return searchParams.get('q') || searchParams.get('query') || null;
+  return searchParams.get('q') || searchParams.get('query') || undefined;
 };
 
 const url = window.location.href;
@@ -127,136 +127,139 @@ const currEngineIndex = getCurrentEngineIndex(url, params);
 if (currEngineIndex !== -1) {
   const filtered = engines.filter((_, i) => i !== currEngineIndex);
   const matchedEngine = engines[currEngineIndex];
-  const q = encodeURIComponent(getQuery(matchedEngine, url, params)?.trim?.());
+  let q = getQuery(matchedEngine, url, params);
+  if (q) {
+    q = encodeURIComponent(q.trim());
 
-  // SECTION: Render Logic
+    // SECTION: Render Logic
 
-  const body = document.querySelector('body');
-  const root = document.createElement('div');
+    const body = document.querySelector('body')!;
+    const root = document.createElement('div');
 
-  const linkContainer = document.createElement('div');
-  linkContainer.id = 'metasearch-link-container';
-  root.id = 'metasearch-root';
+    const linkContainer = document.createElement('div');
+    linkContainer.id = 'metasearch-link-container';
+    root.id = 'metasearch-root';
 
-  let prevScrollPosition = window.pageYOffset;
-  window.addEventListener(
-    'scroll',
-    () => {
-      const currentScrollPos = window.pageYOffset;
-      // Scrolling up
-      if (prevScrollPosition > currentScrollPos) {
-        root.style.bottom = '0';
-      } else {
-        // Scrolling down
-        root.style.bottom = '-48px';
-      }
-      prevScrollPosition = currentScrollPos;
-    },
-    true
-  );
+    let prevScrollPosition = window.pageYOffset;
+    window.addEventListener(
+      'scroll',
+      () => {
+        const currentScrollPos = window.pageYOffset;
+        // Scrolling up
+        if (prevScrollPosition > currentScrollPos) {
+          root.style.bottom = '0';
+        } else {
+          // Scrolling down
+          root.style.bottom = '-48px';
+        }
+        prevScrollPosition = currentScrollPos;
+      },
+      true
+    );
 
-  // Render Buttons
-  const linkList = [];
+    // Render Buttons
+    const linkList: HTMLAnchorElement[] = [];
 
-  for (let i = 0; i < filtered.length; i++) {
-    const engine = filtered[i];
-    const button = Button({
-      icon: engine.icon,
-      color: engine.color,
-      name: engine.name,
-      display: true,
-      lightness: engine.lightness,
-      href: engine.url.replaceAll('%s', q),
-      index: i,
+    for (let i = 0; i < filtered.length; i++) {
+      const engine = filtered[i];
+      const button = Button({
+        icon: engine.icon,
+        color: engine.color,
+        name: engine.name,
+        display: true,
+        lightness: engine.lightness,
+        href: engine.url.replaceAll('%s', q),
+        index: i,
+      });
+      linkList.push(button);
+      linkContainer.appendChild(button);
+    }
+
+    root.appendChild(linkContainer);
+
+    const close = document.createElement('button');
+    close.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-width="2" d="M3,3 L21,21 M3,21 L21,3"></path></svg>`;
+    close.classList.add('icon-button');
+    close.id = 'metasearch-close';
+
+    close.addEventListener('click', () => {
+      root.style.bottom = '-40px';
     });
-    linkList.push(button);
-    linkContainer.appendChild(button);
-  }
 
-  root.appendChild(linkContainer);
+    // Inject Styles Here
+    console.warn('__INJECT__');
 
-  const close = document.createElement('button');
-  close.innerHTML = `<svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" stroke="currentColor" stroke-width="2" d="M3,3 L21,21 M3,21 L21,3"></path></svg>`;
-  close.classList.add('icon-button');
-  close.id = 'metasearch-close';
+    root.appendChild(close);
+    body.appendChild(root);
 
-  close.addEventListener('click', () => {
-    root.style.bottom = '-40px';
-  });
+    const getNextTabIndex = (currIndex = -1, key) => {
+      for (let i = currIndex + 1; i < filtered.length + currIndex; i++) {
+        const index = i % filtered.length;
+        if (filtered[index].key[0] === key.toLowerCase()) return index;
+      }
+      return currIndex;
+    };
 
-  // Inject Styles Here
-  console.warn('__INJECT__');
+    const keydownListener = (e: KeyboardEvent) => {
+      if (e.key === 'Alt') {
+        root.style.bottom = '0';
+      }
 
-  root.appendChild(close);
-  body.appendChild(root);
+      const active = document.activeElement as HTMLElement;
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        if (root.contains(active)) {
+          // Blur root if active element is inside
+          e.preventDefault();
+          active.blur();
+          return;
+        }
+      }
 
-  const getNextTabIndex = (currIndex = -1, key) => {
-    for (let i = currIndex + 1; i < filtered.length + currIndex; i++) {
-      const index = i % filtered.length;
-      if (filtered[index].key[0] === key.toLowerCase()) return index;
-    }
-    return currIndex;
-  };
+      // Alt + Letter
+      const key = e.key.toLowerCase();
+      const focusIndex = linkContainer.contains(active)
+        ? parseInt(active.getAttribute('data-index') || '-1', 10)
+        : -1;
 
-  const keydownListener = (e: KeyboardEvent) => {
-    if (e.key === 'Alt') {
-      root.style.bottom = '0';
-    }
-
-    const active = document.activeElement as HTMLElement;
-    if (e.key === 'Escape' || e.key === 'Esc') {
-      if (root.contains(active)) {
-        // Blur root if active element is inside
+      if (e.altKey && hotkeys[key] !== undefined) {
         e.preventDefault();
-        active.blur();
+        const next = getNextTabIndex(focusIndex, key);
+        linkList[next].focus();
         return;
       }
-    }
 
-    // Alt + Letter
-    const key = e.key.toLowerCase();
-    const focusIndex = linkContainer.contains(active)
-      ? parseInt(active.getAttribute('data-index') || '-1', 10)
-      : -1;
+      // Alt + Number
+      const num = parseInt(e.key, 10);
+      if (e.altKey && !isNaN(num) && num < filtered.length) {
+        e.preventDefault();
+        const index = num - 1;
+        linkList[index].focus();
+        return;
+      }
 
-    if (e.altKey && hotkeys[key] !== undefined) {
-      e.preventDefault();
-      const next = getNextTabIndex(focusIndex, key);
-      linkList[next].focus();
-      return;
-    }
+      // Alt + [: Prev
+      if (e.altKey && (e.key === '[' || e.key === '-')) {
+        const prevIndex =
+          focusIndex - 1 < 0 ? filtered.length - 1 : focusIndex - 1;
+        linkList[prevIndex].focus();
+        return;
+      }
+      // Alt + ]: Next
+      if (e.altKey && (e.key === ']' || e.key === '=')) {
+        const nextIndex = (focusIndex + 1) % filtered.length;
+        linkList[nextIndex].focus();
+        return;
+      }
+    };
+    const keyUpListener = (e: KeyboardEvent) => {
+      const active = document.activeElement as HTMLElement;
+      if (e.key === 'Alt' && linkContainer.contains(active)) {
+        active.click();
+        active.blur();
+      }
+    };
 
-    // Alt + Number
-    const num = parseInt(e.key, 10);
-    if (e.altKey && !isNaN(num) && num < filtered.length) {
-      e.preventDefault();
-      const index = num - 1;
-      linkList[index].focus();
-      return;
-    }
-
-    // Alt + [: Prev
-    if (e.altKey && e.key === '[') {
-      const prevIndex =
-        focusIndex - 1 < 0 ? filtered.length - 1 : focusIndex - 1;
-      linkList[prevIndex].focus();
-      return;
-    }
-    // Alt + ]: Next
-    if (e.altKey && e.key === ']') {
-      const nextIndex = (focusIndex + 1) % filtered.length;
-      linkList[nextIndex].focus();
-      return;
-    }
-  };
-  const keyUpListener = (e: KeyboardEvent) => {
-    const active = document.activeElement as HTMLElement;
-    if (e.key === 'Alt' && linkContainer.contains(active)) {
-      active.click();
-      active.blur();
-    }
-  };
-
-  document.addEventListener('keydown', keydownListener);
-  document.addEventListener('keyup', keyUpListener);
+    document.addEventListener('keydown', keydownListener);
+    document.addEventListener('keyup', keyUpListener);
+  }
 }
