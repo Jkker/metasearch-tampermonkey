@@ -442,6 +442,18 @@
     }
     return searchParams.get("q") || searchParams.get("query") || void 0;
   };
+  const throttle = (callback, limit) => {
+    let waiting = false;
+    return (...args) => {
+      if (!waiting) {
+        callback.apply(null, args);
+        waiting = true;
+        setTimeout(() => {
+          waiting = false;
+        }, limit);
+      }
+    };
+  };
   const url = window.location.href;
   const params = new URLSearchParams(window.location.search);
   const currEngineIndex = getCurrentEngineIndex(url, params);
@@ -459,15 +471,20 @@
       let prevScrollPosition = window.pageYOffset;
       window.addEventListener(
         "scroll",
-        () => {
+        throttle(() => {
           const currentScrollPos = window.pageYOffset;
-          if (prevScrollPosition > currentScrollPos) {
-            root.style.bottom = "0";
-          } else {
+          console.log(
+            `\u{1F680} ~ file: main.ts:150 ~ prevScrollPosition > currentScrollPos`,
+            prevScrollPosition,
+            currentScrollPos
+          );
+          if (prevScrollPosition < currentScrollPos) {
             root.style.bottom = "-48px";
+          } else {
+            root.style.bottom = "0";
           }
           prevScrollPosition = currentScrollPos;
-        },
+        }, 100),
         true
       );
       const linkList = [];

@@ -120,6 +120,22 @@ const getQuery = (
   return searchParams.get('q') || searchParams.get('query') || undefined;
 };
 
+const throttle = (callback, limit) => {
+  let waiting = false; // Initially, we're not waiting
+  return (...args) => {
+    // We return a throttled function
+    if (!waiting) {
+      // If we're not waiting
+      callback.apply(null, args); // Execute users function
+      waiting = true; // Prevent future invocations
+      setTimeout(() => {
+        // After a period of time
+        waiting = false; // And allow future invocations
+      }, limit);
+    }
+  };
+};
+
 const url = window.location.href;
 const params = new URLSearchParams(window.location.search);
 const currEngineIndex = getCurrentEngineIndex(url, params);
@@ -143,17 +159,17 @@ if (currEngineIndex !== -1) {
     let prevScrollPosition = window.pageYOffset;
     window.addEventListener(
       'scroll',
-      () => {
+      throttle(() => {
         const currentScrollPos = window.pageYOffset;
-        // Scrolling up
-        if (prevScrollPosition > currentScrollPos) {
-          root.style.bottom = '0';
-        } else {
-          // Scrolling down
+        // Scrolling down
+        if (prevScrollPosition < currentScrollPos) {
           root.style.bottom = '-48px';
+        } else {
+          // Scrolling up
+          root.style.bottom = '0';
         }
         prevScrollPosition = currentScrollPos;
-      },
+      }, 100),
       true
     );
 
