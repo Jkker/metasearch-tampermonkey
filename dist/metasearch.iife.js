@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Metasearch
 // @namespace    https://github.com/Jkker/metasearch-tampermonkey
-// @version      1.2.4
+// @version      1.2.5
 // @description  Aggregated Searcher
 // @author       Jkker
 // @license      MIT
@@ -473,11 +473,6 @@
         "scroll",
         throttle(() => {
           const currentScrollPos = window.pageYOffset;
-          console.log(
-            `\u{1F680} ~ file: main.ts:150 ~ prevScrollPosition > currentScrollPos`,
-            prevScrollPosition,
-            currentScrollPos
-          );
           if (prevScrollPosition < currentScrollPos) {
             root.style.bottom = "-48px";
           } else {
