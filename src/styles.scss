@@ -35,7 +35,7 @@
         }
       }
 
-      background-color: rgba(0, 0, 0, 0.08);
+      background: rgba(0, 0, 0, 0.08);
     }
     &:active {
       -webkit-tap-highlight-color: transparent;
@@ -46,7 +46,7 @@
           filter: invert(1) hue-rotate(180deg) brightness(0.9);
         }
       }
-      background-color: var(--color);
+      background: var(--color);
     }
     &:focus {
       -webkit-tap-highlight-color: transparent;
@@ -56,7 +56,7 @@
           filter: invert(1) hue-rotate(180deg) brightness(0.7);
         }
       }
-      background-color: var(--color);
+      background: var(--color);
     }
     @media screen and (max-width: 768px) {
       & > span {
@@ -100,10 +100,11 @@
       display: none;
     }
     scrollbar-width: none;
+    display: flex;
+    flex-direction: row;
     overflow-x: auto;
     overflow-y: hidden;
     width: 100%;
-    display: flex;
     box-sizing: border-box;
   }
   overflow-y: hidden;

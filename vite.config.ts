@@ -5,7 +5,7 @@ import { resolve } from 'path';
 import postcss from 'postcss';
 import type { PluginOption, ResolvedConfig } from 'vite';
 import { defineConfig } from 'vite';
-import engines from './src/config.js';
+import { config } from './src/config.js';
 
 function libInjectCss(): PluginOption {
   const fileRegex = /\.(scss)$/;
@@ -72,7 +72,7 @@ const prependUserScriptHeader = () => ({
   name: 'prepend-user-script-header',
   generateBundle(_, bundle) {
     const cwd = process.cwd();
-    const match = engines
+    const match = config.engines
       .filter((e) => !e.disabled)
       .map((engine) => {
         const U = new URL(engine.url);
