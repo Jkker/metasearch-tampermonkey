@@ -30,6 +30,7 @@ export default defineConfig({
         updateURL: 'https://github.com/Jkker/metasearch-tampermonkey/blob/main/dist/metasearch.user.js',
         downloadURL: 'https://github.com/Jkker/metasearch-tampermonkey/blob/main/dist/metasearch.user.js',
         supportURL: 'https://github.com/Jkker/metasearch-tampermonkey/issues',
+        grant: ['GM_setValue', 'GM_getValue', 'GM_registerMenuCommand'],
       },
     }),
   ],
