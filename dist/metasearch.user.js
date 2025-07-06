@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         metasearch
 // @namespace    https://github.com/Jkker/metasearch-tampermonkey
-// @version      2.0.1
+// @version      2.0.2
 // @author       Jkker
 // @description  A Tampermonkey script that adds a button bar to the bottom of the page, allowing you to search multiple engines at once.
 // @icon         https://raw.githubusercontent.com/Jkker/metasearch-tampermonkey/main/favicon.ico
@@ -83,6 +83,7 @@
   }, path: "M5.721 0C2.251 0 0 2.25 0 5.719V18.28C0 21.751 2.252 24 5.721 24h12.56C21.751 24 24 21.75 24 18.281V5.72C24 2.249 21.75 0 18.281 0zm1.964 4.078c-.271.73-.5 1.434-.68 2.11h4.587c.545-.006.445 1.168.445 1.171H9.384a58.104 58.104 0 01-.112 3.797h2.712c.388.023.393 1.251.393 1.266H9.183a9.223 9.223 0 01-.408 2.102l.757-.604c.452.456 1.512 1.712 1.906 2.177.473.681.063 2.081.063 2.081l-2.794-3.382c-.653 2.518-1.845 3.607-1.845 3.607-.523.468-1.58.82-2.64.516 2.218-1.73 3.44-3.917 3.667-6.497H4.491c0-.015.197-1.243.806-1.266h2.71c.024-.32.086-3.254.086-3.797H6.598c-.136.406-.158.447-.268.753-.594 1.095-1.603 1.122-1.907 1.155.906-1.821 1.416-3.6 1.591-4.064.425-1.124 1.671-1.125 1.671-1.125zM13.078 6h6.377v11.33h-2.573l-2.184 1.373-.401-1.373h-1.219zm1.313 1.219v8.86h.623l.263.937 1.455-.938h1.456v-8.86z", source: "https://www.zhihu.com", hex: "0084FF" };
   const config = {
     engines: [
+      // Microsoft Bing - Currently disabled
       {
         title: "Bing",
         slug: "bing",
@@ -91,6 +92,7 @@
         svg: '<svg stroke="currentColor" fill="currentColor" stroke-width="0" role="img" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><title></title><path d="M20.176 15.406a6.48 6.48 0 01-1.736 4.414c1.338-1.47.803-3.869-1.003-4.635-.862-.305-2.488-.85-3.367-1.158a1.834 1.834 0 01-.932-.818c-.381-.975-1.163-2.968-1.548-3.948-.095-.285-.31-.625-.265-.938.046-.598.724-1.003 1.276-.754l3.682 1.888c.621.292 1.305.692 1.796 1.172a6.486 6.486 0 012.097 4.777zm-1.44 1.888c-.264-1.194-1.135-1.744-2.216-2.028-1.527.902-4.853 2.878-6.952 4.13-1.103.68-2.13 1.35-2.919 1.242a2.866 2.866 0 01-2.77-2.325c-.012-.048-.008-.03-.001.01a6.4 6.4 0 00.947 2.653 6.498 6.498 0 005.486 3.022c1.908.062 3.536-1.153 5.099-2.096.292-.188.804-.496 1.332-.831l1.423-1.51c.553-.577.764-1.426.571-2.267zm-12.04 2.97c.422 0 .822-.1 1.173-.29.355-.215.964-.579 1.7-1.018L9.57 4.502c0-.99-.497-1.864-1.257-2.382-.08-.059-2.91-1.901-2.99-1.956-.605-.432-1.523.045-1.5.797v14.887l.417 2.36a2.488 2.488 0 002.455 2.056z"></path></svg>',
         disabled: true
       },
+      // Google - Enhanced with privacy parameters and custom parsing
       {
         ...siGoogle,
         url: "https://www.google.com/search?igu=1&pws=0&gl=us&gws_rd=cr&source=hp&newwindow=1&q=%s&oq=%s&safe=off",
@@ -263,9 +265,10 @@
   };
   const css = ".icon-button{text-decoration:none;display:flex;align-items:center;justify-content:center;gap:4px;outline:transparent;background:transparent;border:none;cursor:pointer;transition:all .15s ease-in-out;white-space:nowrap;-webkit-tap-highlight-color:transparent;flex:1 0 auto;padding:2px 5px;min-width:32px;height:100%;font-size:20px}.icon-button>svg{width:1em;height:1em;fill:currentColor}.icon-button:hover{filter:brightness(.8);background:#00000014}.icon-button:focus{-webkit-tap-highlight-color:transparent;outline:2px solid rgba(0,0,0,.2)}@media screen and (max-width: 768px){.icon-button{padding:0;min-width:40px}.icon-button>span{display:none}}@media screen and (max-width: 768px){.icon-button>svg{height:24px;width:24px}}*{box-sizing:border-box;margin:0;padding:0}:host{box-sizing:border-box;width:100vw;display:flex;position:fixed;bottom:0;left:0;transition:all .1s ease-in-out;height:32px;background-color:#fffc;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);z-index:999999999;box-shadow:0 0 9px #00000012}@media screen and (max-width: 768px){:host{height:40px}}@media screen and (prefers-color-scheme: dark){:host{background-color:#191919b3;color:#fffc}}#metasearch-close{font-size:1em;margin-right:1em;box-shadow:-1px 2px 9px #0000001a}#link-container{scrollbar-gutter:stable;scrollbar-width:none;display:flex;flex-direction:row;overflow-x:auto;overflow-y:hidden;width:100%;box-sizing:border-box}#link-container::-webkit-scrollbar{display:none}body{position:relative!important}";
   function getLightness(hex) {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
+    const cleanHex = hex.startsWith("#") ? hex.slice(1) : hex;
+    const r = parseInt(cleanHex.slice(0, 2), 16);
+    const g = parseInt(cleanHex.slice(2, 4), 16);
+    const b = parseInt(cleanHex.slice(4, 6), 16);
     return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
   }
   async function main() {
@@ -417,5 +420,6 @@
       }
     };
   }
+  main();
 
 })();

@@ -1,3 +1,10 @@
+/**
+ * Metasearch Tampermonkey Script
+ *
+ * A customizable search engine aggregator that adds a floating bar to search result pages,
+ * enabling quick cross-platform searching with keyboard shortcuts and mobile app integration.
+ */
+
 import { config } from './config.ts'
 import { isDarkMode, isTouchScreen } from './utils/mediaQueries.ts'
 import { throttle } from './utils/throttle.ts'
@@ -6,8 +13,13 @@ import css from './style.css?inline'
 import type { Engine } from './types.ts'
 import { getLightness } from './utils/getLightness.ts'
 
+// Development logging utility
 const debug = import.meta.env.DEV ? console.log.bind(console, '[MetaSearch]') : undefined
 
+/**
+ * Main application entry point.
+ * Initializes the search engine aggregator interface and sets up event handlers.
+ */
 async function main() {
   const mobile = isTouchScreen()
 
@@ -64,16 +76,14 @@ async function main() {
 }
 
 /**
- * Sets up scroll-based visibility toggling for a given root HTMLDivElement.
+ * Sets up scroll-based visibility toggling for the search engine bar.
+ * Hides the bar when scrolling down and shows it when scrolling up,
+ * providing a cleaner browsing experience.
  *
- * When the user scrolls down, the element is hidden by moving it downwards.
- * When the user scrolls up, the element is shown by resetting its position.
- * The scroll event handler is throttled to improve performance.
- *
- * @param root - The HTMLDivElement whose visibility should be toggled based on scroll direction.
- * @returns A cleanup function that removes the scroll event listener when called.
+ * @param root - The root container element to show/hide
+ * @returns Cleanup function that removes the scroll event listener
  */
-function setupScrollVisibilityToggleHandler(root: HTMLDivElement) {
+function setupScrollVisibilityToggleHandler(root: HTMLDivElement): () => void {
   let prevScrollPosition = window.scrollY
 
   const handleScroll = throttle(() => {
@@ -89,18 +99,22 @@ function setupScrollVisibilityToggleHandler(root: HTMLDivElement) {
 }
 
 /**
- * Sets up keyboard shortcuts for navigating and activating anchor elements within a given container.
+ * Sets up comprehensive keyboard navigation for search engine buttons.
+ * Provides multiple navigation methods: arrow keys, numbers, letters, and Alt shortcuts.
  *
- * - Allows navigation between links using Alt + [ / - (previous), Alt + ] / = (next), Alt + number (1-based), or Alt + a custom shortcut letter.
- * - Pressing Escape blurs the currently focused link if it is inside the container.
- * - Pressing and releasing Alt while a link is focused triggers a click on that link.
- * - Optionally, pressing Alt alone sets the container's parent element's bottom style to '0'.
+ * Keyboard shortcuts:
+ * - Alt + [ / - : Navigate to previous engine
+ * - Alt + ] / = : Navigate to next engine
+ * - Alt + 1-9 : Jump to engine by position (1-based)
+ * - Alt + letter : Jump to engine by first letter of slug/title
+ * - Escape : Blur currently focused engine
+ * - Alt (release) : Activate focused engine
  *
- * @param container - The HTMLDivElement containing the anchor elements to navigate.
- * @param items - An array of items representing search engines, each with a `shortcut` property used for keyboard navigation.
- * @returns A cleanup function that removes the event listeners when called.
+ * @param container - Container element holding the search engine buttons
+ * @param items - Array of search engine configurations with shortcut mappings
+ * @returns Cleanup function that removes all event listeners
  */
-function setupKeyboardShortcutHandler(container: HTMLDivElement, items: Item[]) {
+function setupKeyboardShortcutHandler(container: HTMLDivElement, items: Item[]): () => void {
   const getActive = () => document.activeElement as HTMLAnchorElement
   const links = [...container.querySelectorAll('a')]
   const shortcuts = new Set(items.map((e) => e.shortcut))
@@ -163,15 +177,13 @@ function setupKeyboardShortcutHandler(container: HTMLDivElement, items: Item[]) 
 main()
 
 /**
- * Sets up a horizontal scroll handler on the given container element.
- * Converts vertical mouse wheel scrolling into horizontal scrolling,
- * allowing users to scroll horizontally using the mouse wheel.
- * The scroll event is throttled to improve performance.
+ * Sets up horizontal scrolling for the search engine container using mouse wheel input.
+ * Converts vertical wheel movement to horizontal scrolling for better UX on desktop devices.
  *
- * @param container - The HTMLDivElement to attach the horizontal scroll handler to.
- * @returns A cleanup function that removes the event listener when called.
+ * @param container - The scrollable container element
+ * @returns Cleanup function that removes the wheel event listener
  */
-function setupHorizontalScrollHandler(container: HTMLDivElement) {
+function setupHorizontalScrollHandler(container: HTMLDivElement): () => void {
   const horizontalScrollThrottler = throttle((event: WheelEvent) => {
     if (!event.deltaY) {
       return
@@ -188,7 +200,15 @@ function setupHorizontalScrollHandler(container: HTMLDivElement) {
   return () => container.removeEventListener('wheel', horizontalScrollThrottler)
 }
 
- function createItem(_engine: Engine, mobile = false) {
+/**
+ * Creates a search engine item with all necessary properties and methods.
+ * Processes the engine configuration and generates parsing, formatting, and rendering functions.
+ *
+ * @param _engine - Base engine configuration
+ * @param mobile - Whether to apply mobile-specific overrides
+ * @returns Complete engine item with parse, format, and render methods
+ */
+function createItem(_engine: Engine, mobile = false) {
   const engine = mobile ? { ..._engine, ..._engine.mobile } : _engine
   if (!engine.hex.startsWith('#')) engine.hex = `#${engine.hex}`
 
@@ -240,5 +260,10 @@ function setupHorizontalScrollHandler(container: HTMLDivElement) {
   }
 }
 
+// Initialize the application
+main()
 
+/**
+ * Type definition for processed search engine items with runtime methods.
+ */
 type Item = ReturnType<typeof createItem>
