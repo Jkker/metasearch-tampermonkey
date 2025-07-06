@@ -1,0 +1,7 @@
+onlyBuiltDependencies:
+  - esbuild
+  - msw
+
+peerDependencyRules:
+  allowedVersions:
+    'vite-plugin-monkey>vite': '7'

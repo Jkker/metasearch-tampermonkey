@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["unicorn", "typescript", "oxc", "jsdoc"],
+  "categories": {
+    "correctness": "error",
+    "perf": "warn"
+  },
+  "settings": {
+    "jsdoc": {
+      "ignorePrivate": false,
+      "ignoreInternal": false,
+      "ignoreReplacesDocs": true,
+      "overrideReplacesDocs": true,
+      "augmentsExtendsReplacesDocs": false,
+      "implementsReplacesDocs": false,
+      "exemptDestructuredRootsFromChecks": false,
+      "tagNamePreference": {}
+    }
+  },
+  "env": {
+    "builtin": true,
+    "browser": true,
+    "es2024": true,
+    "greasemonkey": true
+  }
+}
