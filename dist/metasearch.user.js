@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         metasearch-tampermonkey
+// @name         metasearch
 // @namespace    https://github.com/Jkker/metasearch-tampermonkey
-// @version      2.0.0
+// @version      2.0.1
 // @author       Jkker
 // @description  A Tampermonkey script that adds a button bar to the bottom of the page, allowing you to search multiple engines at once.
 // @icon         https://raw.githubusercontent.com/Jkker/metasearch-tampermonkey/main/favicon.ico
@@ -20,10 +20,6 @@
 // @match        *://*.x.com/search*
 // @match        *://duckduckgo.com/*
 // @match        *://*.duckduckgo.com/*
-// @match        *://google.com/search*
-// @match        *://*.google.com/search*
-// @match        *://google.com/search*
-// @match        *://*.google.com/search*
 // @match        *://amazon.com/s*
 // @match        *://*.amazon.com/s*
 // @match        *://ebay.com/sch/i*
@@ -104,8 +100,6 @@
           if (q?.includes("site:") && config.engines.some((e) => e.site === q.split("site:")[1])) return;
           return q;
         }
-        // parse:
-        //   /^https?:\/\/www\.google(?:\.[A-z]{2,3}){1,2}\/[^?]+\?(?!tbm=)(?:&?q=|(?:[^#](?!&tbm=))+?&q=)(?:.(?!&tbm=))*$/i,
       },
       {
         ...siBilibili,

@@ -23,8 +23,8 @@ export default defineConfig({
         fileName: 'metasearch.user.js',
       },
       userscript: {
-        match,
-        // match: ['*://*/*'],
+        name: 'metasearch',
+        match: [...new Set(match)],
         icon: 'https://raw.githubusercontent.com/Jkker/metasearch-tampermonkey/main/favicon.ico',
         namespace: 'https://github.com/Jkker/metasearch-tampermonkey',
         updateURL: 'https://github.com/Jkker/metasearch-tampermonkey/blob/main/dist/metasearch.user.js',

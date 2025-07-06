@@ -40,10 +40,7 @@ export const config: { engines: Engine[] } = {
         if (q?.includes('site:') && config.engines.some((e) => e.site === q.split('site:')[1])) return
         return q
       },
-      // parse:
-      //   /^https?:\/\/www\.google(?:\.[A-z]{2,3}){1,2}\/[^?]+\?(?!tbm=)(?:&?q=|(?:[^#](?!&tbm=))+?&q=)(?:.(?!&tbm=))*$/i,
     },
-
     {
       ...siBilibili,
       url: 'https://search.bilibili.com/all?keyword=%s',
