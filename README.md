@@ -2,6 +2,8 @@
 
 A customizable, themeable, and mobile-friendly search engine aggregator script for Tampermonkey that enhances your search experience across multiple platforms.
 
+## [⬇️ Install](https://github.com/Jkker/metasearch-tampermonkey/raw/refs/heads/main/dist/metasearch.user.js)
+
 ## 🌟 Features
 
 - **Cross-Engine Navigation**: Displays a sleek bottom bar on search result pages with buttons for instantly searching across different engines
