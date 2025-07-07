@@ -5,7 +5,9 @@
  * enabling quick cross-platform searching with keyboard shortcuts and mobile app integration.
  */
 
-import { config } from './config.ts'
+import { loadConfiguration } from './configManager.ts'
+import { openSettingsPage } from './settingsPage.ts'
+import { saveConfiguration, resetConfiguration } from './configManager.ts'
 import { isDarkMode, isTouchScreen } from './utils/mediaQueries.ts'
 import { throttle } from './utils/throttle.ts'
 
@@ -25,6 +27,8 @@ async function main() {
 
   const url = new URL(window.location.href)
 
+  // Load configuration from storage (with fallback to default)
+  const config = loadConfiguration()
   const entries = config.engines.filter(({ disabled }) => !disabled).map((e) => createItem(e, mobile))
 
   const res = entries.map(({ parse }) => parse(url))
@@ -262,6 +266,30 @@ function createItem(_engine: Engine, mobile = false) {
 
 // Initialize the application
 main()
+
+// Register menu command for settings
+GM_registerMenuCommand('Settings', openSettingsPage)
+
+// Handle messages from settings page
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'saveConfiguration') {
+    try {
+      saveConfiguration({ engines: event.data.engines })
+      // Optionally reload the page to apply changes
+      window.location.reload()
+    } catch (error) {
+      console.error('[MetaSearch] Failed to save configuration:', error)
+    }
+  } else if (event.data.type === 'resetConfiguration') {
+    try {
+      resetConfiguration()
+      // Optionally reload the page to apply changes
+      window.location.reload()
+    } catch (error) {
+      console.error('[MetaSearch] Failed to reset configuration:', error)
+    }
+  }
+})
 
 /**
  * Type definition for processed search engine items with runtime methods.
