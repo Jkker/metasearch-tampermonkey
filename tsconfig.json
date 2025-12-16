@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "tsBuildInfoFile": "node_modules/.cache/.tsbuildinfo",
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -18,7 +19,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    "types": ["vite/client", "vite-plugin-monkey/global", "@vitest/browser/providers/playwright", "@vitest/browser/matchers"]
+    "types": ["vite/client", "vite-plugin-monkey/global"]
   },
   "include": ["src"]
 }

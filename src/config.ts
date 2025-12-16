@@ -59,7 +59,8 @@ export const config: { engines: Engine[] } = {
         if (!href.includes('www.google.com/search')) return
         const q = searchParams.get('q')
         // Skip site-specific searches handled by other engines
-        if (q?.includes('site:') && config.engines.some((e) => e.site === q.split('site:')[1])) return
+        if (q?.includes('site:') && config.engines.some((e) => e.site === q.split('site:')[1]))
+          return
         return q
       },
     },
@@ -206,7 +207,8 @@ export const config: { engines: Engine[] } = {
       mobile: {
         url: 'https://m.baidu.com/s?word=%s',
         q: 'word',
-        parse: ({ hostname, searchParams }) => hostname.includes('m.baidu.com') && searchParams.get('word'),
+        parse: ({ hostname, searchParams }) =>
+          hostname.includes('m.baidu.com') && searchParams.get('word'),
       },
     },
     {

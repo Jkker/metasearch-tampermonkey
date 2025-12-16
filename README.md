@@ -22,7 +22,7 @@ A customizable, themeable, and mobile-friendly search engine aggregator script f
 1. Install the [Tampermonkey](https://www.tampermonkey.net/) browser extension
 2. Click one of the installation links below:
 
-- **[Install via Greasy Fork](https://greasyfork.org/en/scripts/451732-metasearch)** *(Recommended)*
+- **[Install via Greasy Fork](https://greasyfork.org/en/scripts/451732-metasearch)** _(Recommended)_
 - **[Install via GitHub](https://raw.githubusercontent.com/Jkker/metasearch-tampermonkey/main/dist/metasearch.iife.js)**
 
 ### Supported Search Engines
@@ -30,12 +30,14 @@ A customizable, themeable, and mobile-friendly search engine aggregator script f
 The script currently supports **25+ search engines** across various categories:
 
 #### 🔍 **General Search**
+
 - **Google**: Enhanced search with privacy parameters
 - **Bing**: Microsoft's search engine
 - **DuckDuckGo**: Privacy-focused search
 - **Baidu (百度)**: China's leading search engine
 
 #### 🎥 **Media & Social**
+
 - **YouTube**: Video search with mobile app integration
 - **Bilibili**: Chinese video platform
 - **TikTok**: Short-form video content
@@ -45,24 +47,28 @@ The script currently supports **25+ search engines** across various categories:
 - **WeChat (微信)**: Chinese messaging platform
 
 #### 🛒 **E-commerce**
+
 - **Amazon**: Global marketplace
 - **eBay**: Online auctions and marketplace
 - **Taobao (淘宝)**: Chinese e-commerce platform
 - **JD.com (京东)**: Chinese online retailer
 
 #### 👥 **Communities & Q&A**
+
 - **Reddit**: Social news aggregation
 - **Zhihu (知乎)**: Chinese Q&A platform
 - **Quora**: Question and answer platform
 
 #### 💻 **Developer Resources**
+
 - **GitHub**: Code repository search
 - **MDN Web Docs**: Web development documentation
 
 #### 🧮 **Utilities**
+
 - **Wolfram Alpha**: Computational knowledge engine
 
-*Each engine includes intelligent query parsing, mobile app deep linking (where applicable), and optimized search parameters.*
+_Each engine includes intelligent query parsing, mobile app deep linking (where applicable), and optimized search parameters._
 
 ## ⌨️ Keyboard Shortcuts
 
@@ -73,17 +79,19 @@ Metasearch includes powerful keyboard navigation for desktop users:
 - **`Alt + 1-9`**: Jump directly to search engine by position
 - **`Alt + [letter]`**: Jump to search engine by first letter (e.g., `Alt + g` for Google)
 - **`Escape`**: Remove focus from current search engine button
-- **`Alt` (release)****: Activate the currently focused search engine
+- **`Alt` (release)\*\***: Activate the currently focused search engine
 
 ## 🎮 User Interface
 
 ### Desktop Experience
+
 - **Horizontal scrollable bar** at the bottom of search pages
 - **Mouse wheel support** for horizontal scrolling when hovering over the bar
 - **Auto-hide on scroll down**, **show on scroll up** for distraction-free browsing
 - **Customizable colors** that adapt to dark/light themes
 
 ### Mobile Experience
+
 - **Touch-optimized buttons** with appropriate sizing
 - **Deep linking support** for native app integration
 - **Responsive layout** that works across all screen sizes
@@ -93,6 +101,7 @@ Metasearch includes powerful keyboard navigation for desktop users:
 ### Prerequisites
 
 Ensure you have the following installed:
+
 - **Node.js** (v18 or later)
 - **pnpm** (package manager)
 
@@ -107,21 +116,27 @@ pnpm install
 ### Development Workflow
 
 #### Building for Production
+
 ```bash
 pnpm run build
 ```
+
 Generates the production userscript in `/dist/metasearch.user.js`
 
 #### Development Mode
+
 ```bash
 pnpm run dev
 ```
+
 Starts the development server with hot reload capabilities
 
 #### Running Tests
+
 ```bash
 pnpm run test
 ```
+
 Executes the test suite using Vitest with browser testing
 
 ### Project Structure
@@ -145,9 +160,22 @@ metasearch-tampermonkey/
 ### Build Configuration
 
 The build process uses Vite with the following plugins:
+
 - **vite-plugin-monkey**: Generates Tampermonkey-compatible userscripts
 - **CSS injection**: Inlines styles directly into the script
 - **TypeScript compilation**: Full type checking and modern JS output
+
+### Versioning / Releases (SemVer)
+
+This repo uses **Release Please** to bump versions based on **Conventional Commit** messages.
+
+- Commits of type `fix:` → **patch** bump (e.g. `2.0.3` → `2.0.4`)
+- Commits of type `feat:` → **minor** bump (e.g. `2.0.3` → `2.1.0`)
+- Commits marked as breaking (`feat!:` / `fix!:` / `refactor!:` or a `BREAKING CHANGE:` footer) → **major** bump (e.g. `2.0.3` → `3.0.0`)
+
+On pushes to `main`, the workflow will keep a **Release PR** up to date. Merging that PR tags a GitHub release and updates `package.json`.
+
+The userscript in `dist/` is rebuilt and committed by CI after changes land on `main`, so `@version` in `dist/metasearch.user.js` stays in sync with `package.json`.
 
 ## 🎨 Customization
 
@@ -161,29 +189,29 @@ Open `src/config.ts` and edit the `engines` array within the `config` object. Ea
 
 #### Core Properties
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `title` | `string` | ✅ | Display name for the search engine |
-| `url` | `string` | ✅ | Search URL template with `%s` placeholder for queries |
-| `hex` | `string` | ✅ | Foreground color in hex format (e.g., `#FF5733`) |
-| `svg` | `string` | ✅ | SVG icon markup for the engine button |
+| Property | Type     | Required | Description                                           |
+| -------- | -------- | -------- | ----------------------------------------------------- |
+| `title`  | `string` | ✅       | Display name for the search engine                    |
+| `url`    | `string` | ✅       | Search URL template with `%s` placeholder for queries |
+| `hex`    | `string` | ✅       | Foreground color in hex format (e.g., `#FF5733`)      |
+| `svg`    | `string` | ✅       | SVG icon markup for the engine button                 |
 
 #### Optional Configuration
 
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| `slug` | `string` | `title[0]` | Unique identifier for keyboard shortcuts |
-| `q` | `string` | `'q'` | Query parameter name for URL parsing |
-| `site` | `string` | `undefined` | Site-specific search parameter |
-| `disabled` | `boolean` | `false` | Hide engine from the interface |
-| `mobile` | `Partial<Engine>` | `{}` | Mobile-specific overrides |
+| Property   | Type              | Default     | Description                              |
+| ---------- | ----------------- | ----------- | ---------------------------------------- |
+| `slug`     | `string`          | `title[0]`  | Unique identifier for keyboard shortcuts |
+| `q`        | `string`          | `'q'`       | Query parameter name for URL parsing     |
+| `site`     | `string`          | `undefined` | Site-specific search parameter           |
+| `disabled` | `boolean`         | `false`     | Hide engine from the interface           |
+| `mobile`   | `Partial<Engine>` | `{}`        | Mobile-specific overrides                |
 
 #### Advanced Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `parse` | `RegExp \| ParseFn` | Custom logic for extracting queries from URLs |
-| `format` | `FormatFn \| string` | Custom URL formatting for search queries |
+| Property | Type                 | Description                                   |
+| -------- | -------------------- | --------------------------------------------- |
+| `parse`  | `RegExp \| ParseFn`  | Custom logic for extracting queries from URLs |
+| `format` | `FormatFn \| string` | Custom URL formatting for search queries      |
 
 ### Example: Adding a Custom Search Engine
 
@@ -250,6 +278,7 @@ We welcome contributions from the community! Here's how you can help improve Met
 ### Development Guidelines
 
 1. **Fork the repository** and create your feature branch
+
    ```bash
    git checkout -b feature/amazing-feature
    ```
@@ -261,12 +290,14 @@ We welcome contributions from the community! Here's how you can help improve Met
    - Write tests for new functionality
 
 3. **Test your changes** thoroughly:
+
    ```bash
    pnpm run test
    pnpm run build
    ```
 
 4. **Commit your changes** with a descriptive message:
+
    ```bash
    git commit -m "feat: add support for new search engine"
    ```

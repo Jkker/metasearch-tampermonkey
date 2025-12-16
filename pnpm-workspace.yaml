@@ -4,4 +4,4 @@ onlyBuiltDependencies:
 
 peerDependencyRules:
   allowedVersions:
-    'vite-plugin-monkey>vite': '7'
+    'vite-plugin-monkey>vite': '8.0.0-beta.2'

@@ -1,34 +1,30 @@
 {
   "name": "metasearch-tampermonkey",
+  "version": "2.0.3",
+  "private": true,
   "description": "A Tampermonkey script that adds a button bar to the bottom of the page, allowing you to search multiple engines at once.",
   "author": {
     "name": "Jkker",
     "email": "j@erry.dev"
   },
-  "private": true,
-  "version": "2.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "test": "vitest",
+    "build": "tsgo -b && vite build",
+    "lint": "oxlint --type-aware",
+    "format": "oxfmt --write",
     "preview": "vite preview"
   },
   "dependencies": {
-    "simple-icons": "^15.4.0"
+    "simple-icons": "^16.2.0"
   },
   "devDependencies": {
-    "@testing-library/dom": "^10.4.0",
-    "@types/node": "^24.0.10",
-    "@vitest/browser": "^3.2.4",
-    "msw": "^2.10.3",
-    "oxlint": "^1.5.0",
-    "playwright": "^1.53.2",
-    "postcss": "^8.5.6",
-    "typescript": "~5.8.3",
-    "vite": "^7.0.0",
-    "vite-plugin-monkey": "^5.0.9",
-    "vitest": "^3.2.4"
+    "@typescript/native-preview": "7.0.0-dev.20251215.1",
+    "oxfmt": "^0.18.0",
+    "oxlint": "^1.33.0",
+    "oxlint-tsgolint": "^0.9.1",
+    "vite": "8.0.0-beta.2",
+    "vite-plugin-monkey": "^7.1.8"
   },
-  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
+  "packageManager": "pnpm@10.26.0+sha512.3b3f6c725ebe712506c0ab1ad4133cf86b1f4b687effce62a9b38b4d72e3954242e643190fc51fa1642949c735f403debd44f5cb0edd657abe63a8b6a7e1e402"
 }

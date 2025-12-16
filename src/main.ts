@@ -25,7 +25,9 @@ async function main() {
 
   const url = new URL(window.location.href)
 
-  const entries = config.engines.filter(({ disabled }) => !disabled).map((e) => createItem(e, mobile))
+  const entries = config.engines
+    .filter(({ disabled }) => !disabled)
+    .map((e) => createItem(e, mobile))
 
   const res = entries.map(({ parse }) => parse(url))
   const active = res.findIndex((i) => i)
@@ -64,7 +66,7 @@ async function main() {
         root.style.bottom = '-40px'
         cleanup.forEach((fn) => fn())
       },
-    })
+    }),
   )
   body.append(root)
 
@@ -114,7 +116,10 @@ function setupScrollVisibilityToggleHandler(root: HTMLDivElement): () => void {
  * @param items - Array of search engine configurations with shortcut mappings
  * @returns Cleanup function that removes all event listeners
  */
-function setupKeyboardShortcutHandler(container: HTMLDivElement, items: Item[]): () => void {
+function setupKeyboardShortcutHandler(
+  container: HTMLDivElement,
+  items: ReturnType<typeof createItem>[],
+): () => void {
   const getActive = () => document.activeElement as HTMLAnchorElement
   const links = [...container.querySelectorAll('a')]
   const shortcuts = new Set(items.map((e) => e.shortcut))
@@ -173,8 +178,6 @@ function setupKeyboardShortcutHandler(container: HTMLDivElement, items: Item[]):
     document.removeEventListener('keyup', keyupListener)
   }
 }
-
-main()
 
 /**
  * Sets up horizontal scrolling for the search engine container using mouse wheel input.
@@ -261,9 +264,4 @@ function createItem(_engine: Engine, mobile = false) {
 }
 
 // Initialize the application
-main()
-
-/**
- * Type definition for processed search engine items with runtime methods.
- */
-type Item = ReturnType<typeof createItem>
+void main()
