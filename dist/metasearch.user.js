@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         metasearch
 // @namespace    https://github.com/Jkker/metasearch-tampermonkey
-// @version      2.0.3
+// @version      2.1.0
 // @author       Jkker
 // @description  A Tampermonkey script that adds a button bar to the bottom of the page, allowing you to search multiple engines at once.
 // @icon         https://raw.githubusercontent.com/Jkker/metasearch-tampermonkey/main/favicon.ico

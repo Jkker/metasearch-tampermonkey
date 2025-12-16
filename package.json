@@ -1,6 +1,6 @@
 {
   "name": "metasearch-tampermonkey",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "private": true,
   "description": "A Tampermonkey script that adds a button bar to the bottom of the page, allowing you to search multiple engines at once.",
   "author": {
