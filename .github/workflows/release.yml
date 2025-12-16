@@ -27,7 +27,7 @@ jobs:
           manifest-file: .release-please-manifest.json
 
   build-dist:
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    if: github.actor != 'github-actions[bot]'
     needs: release-please
     runs-on: ubuntu-latest
     steps:
@@ -48,6 +48,13 @@ jobs:
       - run: pnpm build
 
       - uses: stefanzweifel/git-auto-commit-action@v5
+        if: ${{ needs.release-please.outputs.release_created == 'true' }}
         with:
           commit_message: 'chore: build dist for v${{ needs.release-please.outputs.version }}'
+          file_pattern: dist/**
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        if: ${{ needs.release-please.outputs.release_created != 'true' }}
+        with:
+          commit_message: 'chore: build dist'
           file_pattern: dist/**
