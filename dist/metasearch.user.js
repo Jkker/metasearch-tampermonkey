@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         metasearch
 // @namespace    https://github.com/Jkker/metasearch-tampermonkey
-// @version      2.0.2
+// @version      2.0.3
 // @author       Jkker
 // @description  A Tampermonkey script that adds a button bar to the bottom of the page, allowing you to search multiple engines at once.
 // @icon         https://raw.githubusercontent.com/Jkker/metasearch-tampermonkey/main/favicon.ico
@@ -114,7 +114,14 @@
         ...siYoutube,
         url: "https://www.youtube.com/results?search_query=%s",
         q: "search_query",
-        mobile: { format: "youtube:///results?q=%s" }
+        mobile: {
+          format: (query) => {
+            const ua = navigator.userAgent || "";
+            if (/android/i.test(ua))
+              return `intent://www.youtube.com/results?search_query=${query}#Intent;package=com.google.android.youtube;scheme=https;end`;
+            return `youtube://www.youtube.com/results?search_query=${query}`;
+          }
+        }
       },
       {
         ...siXiaohongshu,

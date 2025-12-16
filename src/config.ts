@@ -74,7 +74,14 @@ export const config: { engines: Engine[] } = {
       ...siYoutube,
       url: 'https://www.youtube.com/results?search_query=%s',
       q: 'search_query',
-      mobile: { format: 'youtube:///results?q=%s' },
+      mobile: {
+        format: (query: string) => {
+          const ua = navigator.userAgent || ''
+          if (/android/i.test(ua))
+            return `intent://www.youtube.com/results?search_query=${query}#Intent;package=com.google.android.youtube;scheme=https;end`
+          return `youtube://www.youtube.com/results?search_query=${query}`
+        },
+      },
     },
     {
       ...siXiaohongshu,
